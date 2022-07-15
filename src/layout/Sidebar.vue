@@ -6,7 +6,7 @@
     collapsible
     class="layout-sider-wrapper"
   >
-    <a-menu mode="inline" :selectedKeys="navKey" @select="handleSelectKeys">
+    <a-menu mode="inline" :selectedKeys="navKey" @select="handleSelectKeys" theme="dark">
       <template v-for="item in sidebarMenu" :key="item.name">
         <a-sub-menu :key="item.path" v-if="isVisibleNextRoute(item)">
           <template #icon>
@@ -74,7 +74,7 @@ const handleSelectKeys = ({ selectedKeys }: { selectedKeys: Array<string> }) => 
 .layout-sider-wrapper {
   height: calc(100vh - 64px);
   overflow: auto;
-  background: #fff;
+  // background: rgba(3, 21, 56, 1);
   .anticon {
     font-size: 20px;
   }

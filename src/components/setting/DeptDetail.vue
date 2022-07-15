@@ -100,7 +100,7 @@ const initModal = async (type: number, initInfo: any) => {
  */
 const getDeptDetail = async (deptId: number) => {
   const { code, data } = await apiGetDeptDetail({ deptId })
-  if (code === 200) {
+  if (code === 20000) {
     const { deptName, orderNum, leader, phone, email, status } = data
     // 根据最后一个节点找到各级父节点
     const parentIdArr = findTreePath(deptOptions.value, (val: any) => val.id === data.parentId, [])
@@ -121,7 +121,7 @@ const getDeptDetail = async (deptId: number) => {
  */
 const getDepartmentList = async () => {
   const { code, data } = await apiGetDepartmentList()
-  if (code === 200) {
+  if (code === 20000) {
     deptOptions.value = data
   }
 }
@@ -136,13 +136,13 @@ const handleConfirm = () => {
     const params = { ...detailInfo, parentId: detailInfo.parentId[len - 1] }
     if (handleType.value === actionTypeEnum.ADD) {
       const { code } = await apiAddDept(params)
-      if (code === 200) {
+      if (code === 20000) {
         message.success('添加部门成功')
         props.handleRefresh()
       }
     } else {
       const { code } = await apiUpdateDept({ ...params, deptId: deptId.value })
-      if (code === 200) {
+      if (code === 20000) {
         message.success('更新部门成功')
         props.getSourceData()
       }

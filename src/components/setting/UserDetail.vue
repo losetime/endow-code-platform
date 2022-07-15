@@ -132,7 +132,7 @@ const initModal = (type: number, initInfo: any) => {
  */
 const getUserDetail = async () => {
   const { code, data } = await apiGetUserDetail({ userId: userId.value })
-  if (code === 200) {
+  if (code === 20000) {
     const { nickName, deptId, phonenumber, email, sex, status, remark } = data.user
     statusOptions.value = data.roles
     Object.assign(detailInfo, {
@@ -155,7 +155,7 @@ const getUserDetail = async () => {
  */
 const getDepartmentList = async () => {
   const { code, data } = await apiGetDepartmentList()
-  if (code === 200) {
+  if (code === 20000) {
     deptOptions.value = data
   }
 }
@@ -173,13 +173,13 @@ const handleConfirm = () => {
     const len = deptId.length
     if (handleType.value === actionTypeEnum.ADD) {
       const { code } = await apiAddUser({ ...detailInfo, deptId: deptId[len - 1] })
-      if (code === 200) {
+      if (code === 20000) {
         message.success('添加用户成功')
         props.handleRefresh()
       }
     } else {
       const { code } = await apiUpdateUser({ ...detailInfo, deptId: deptId[len - 1], userId: userId.value })
-      if (code === 200) {
+      if (code === 20000) {
         message.success('更新用户成功')
         props.getSourceData()
       }

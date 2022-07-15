@@ -111,7 +111,7 @@ const initModal = async (type: number, initInfo: any) => {
  */
 const getMenuTreeOptions = async () => {
   const { code, data } = await apiGetMenuTree()
-  if (code === 200) {
+  if (code === 20000) {
     menuTreeOptions.value = data
   }
 }
@@ -121,7 +121,7 @@ const getMenuTreeOptions = async () => {
  */
 const getSelectedMenuTree = async () => {
   const { code, data } = await apiGetSelectedMenuTree({ roleId: roleId.value })
-  if (code === 200) {
+  if (code === 20000) {
     menuTreeOptions.value = data.menus
     detailInfo.menuIds = data.checkedKeys
   }
@@ -132,7 +132,7 @@ const getSelectedMenuTree = async () => {
  */
 const getRoleDetail = async () => {
   const { code, data } = await apiGetRoleDetail({ roleId: roleId.value })
-  if (code === 200) {
+  if (code === 20000) {
     const { roleName, roleKey, roleSort, status, menuCheckStrictly, remark } = data
     Object.assign(detailInfo, {
       roleName,
@@ -159,13 +159,13 @@ const handleConfirm = () => {
   validate().then(async () => {
     if (handleType.value === actionTypeEnum.ADD) {
       const { code } = await apiAddRole({ ...detailInfo })
-      if (code === 200) {
+      if (code === 20000) {
         message.success('添加角色成功')
         props.handleRefresh()
       }
     } else {
       const { code } = await apiUpdateRole({ ...detailInfo, roleId: roleId.value })
-      if (code === 200) {
+      if (code === 20000) {
         message.success('更新角色成功')
         props.getSourceData()
       }

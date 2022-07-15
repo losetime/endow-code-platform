@@ -30,16 +30,13 @@ export default ({ mode }) => {
     css: {
       preprocessorOptions: {
         less: {
-          modifyVars: {
-            'primary-color': '#015C61',
-          },
           javascriptEnabled: true,
         },
       },
     },
     server: {
       host: '0.0.0.0',
-      port: 3001,
+      port: 3000,
     },
   })
 }

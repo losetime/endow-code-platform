@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import store from '@/store'
+import store from '@/store'
 import Layout from '@/layout/Layout.vue'
 import Header from '@/layout/Header.vue'
 import Sidebar from '@/layout/Sidebar.vue'
@@ -39,7 +39,7 @@ const routes = [
     meta: {
       title: '主页',
       level: 1,
-      visible: true,
+      visible: false,
     },
     children: [
       {
@@ -55,7 +55,7 @@ const routes = [
           title: '首页',
           level: 2,
           visible: true,
-          icon: '#',
+          icon: 'icon-tongji',
         },
         children: [],
       },
@@ -72,7 +72,90 @@ const routes = [
           title: '企业码',
           level: 2,
           visible: true,
-          icon: '#',
+          icon: 'icon-qiye',
+        },
+        children: [],
+      },
+      {
+        path: 'people-code',
+        name: 'PeopleCode',
+        components: {
+          default: Header,
+          sidebar: Sidebar,
+          breadcrumb: Breadcrumb,
+          main: () => import('../views/home/PeopleCode.vue'),
+        },
+        meta: {
+          title: '人员码',
+          level: 2,
+          visible: true,
+          icon: 'icon-yonghu',
+        },
+        children: [],
+      },
+      {
+        path: 'project-code',
+        name: 'ProjectCode',
+        components: {
+          default: Header,
+          sidebar: Sidebar,
+          breadcrumb: Breadcrumb,
+          main: () => import('../views/home/ProjectCode.vue'),
+        },
+        meta: {
+          title: '工程码',
+          level: 2,
+          visible: true,
+          icon: 'icon-gongcheng-1',
+        },
+        children: [],
+      },
+      {
+        path: 'code-convert',
+        name: 'CodeConvert',
+        components: {
+          default: Header,
+          sidebar: Sidebar,
+          breadcrumb: Breadcrumb,
+          main: () => import('../views/home/CodeConvert.vue'),
+        },
+        meta: {
+          title: '码转色',
+          level: 2,
+          visible: true,
+          icon: 'icon-erweima',
+        },
+        children: [
+          {
+            path: 'convert-code-detail',
+            name: 'ConvertCodeDetail',
+            components: {
+              mainSub: () => import('../components/home/ConvertCodeDetail.vue'),
+            },
+            meta: {
+              title: '转换二维码颜色',
+              level: 3,
+              visible: false,
+              icon: '#',
+            },
+            children: [],
+          },
+        ],
+      },
+      {
+        path: 'appeal-manage',
+        name: 'AppealManage',
+        components: {
+          default: Header,
+          sidebar: Sidebar,
+          breadcrumb: Breadcrumb,
+          main: () => import('../views/home/AppealManage.vue'),
+        },
+        meta: {
+          title: '申诉管理',
+          level: 2,
+          visible: true,
+          icon: 'icon-shensu',
         },
         children: [],
       },
@@ -87,7 +170,7 @@ const specialRoute = ['Overview', 'FlowDesign']
  */
 export const getRouters = async () => {
   const { code, data } = await apiGetRoutersInfo()
-  if (code === 200) {
+  if (code === 20000) {
     const routesInfo = formattRouter(data, [])
     routesInfo.forEach((item) => {
       router.addRoute(item)
@@ -179,46 +262,46 @@ export const router = createRouter({
 /**
  * @desc 路由守卫
  */
-// router.beforeEach((to, _from, next) => {
-//   const storeToken = store.state.token
-//   const cacheToken = localStorage.getItem('ymToken')
-//   if (to.name === 'Login') {
-//     if (cacheToken) {
-//       store.commit('SET_TOKEN', cacheToken)
-//       store
-//         .dispatch('GetUserInfo')
-//         .then(async () => {
-//           await getRouters()
-//           next({ name: 'Overview' })
-//         })
-//         .catch(() => {
-//           localStorage.removeItem('ymToken')
-//           next()
-//         })
-//     } else {
-//       next()
-//     }
-//   } else {
-//     if (cacheToken) {
-//       if (storeToken) {
-//         next()
-//       } else {
-//         store.commit('SET_TOKEN', cacheToken)
-//         store
-//           .dispatch('GetUserInfo')
-//           .then(async () => {
-//             await getRouters()
-//             next({ path: to.path, query: to.query })
-//           })
-//           .catch(() => {
-//             localStorage.removeItem('ymToken')
-//             next({ name: 'Login' })
-//           })
-//       }
-//     } else {
-//       next({ name: 'Login' })
-//     }
-//   }
-// })
+router.beforeEach((to, _from, next) => {
+  const storeToken = store.state.token
+  const cacheToken = localStorage.getItem('ymToken')
+  if (to.name === 'Login') {
+    if (cacheToken) {
+      store.commit('SET_TOKEN', cacheToken)
+      store
+        .dispatch('GetUserInfo')
+        .then(async () => {
+          // await getRouters()
+          next({ name: 'Overview' })
+        })
+        .catch(() => {
+          localStorage.removeItem('ymToken')
+          next()
+        })
+    } else {
+      next()
+    }
+  } else {
+    if (cacheToken) {
+      if (storeToken) {
+        next()
+      } else {
+        store.commit('SET_TOKEN', cacheToken)
+        store
+          .dispatch('GetUserInfo')
+          .then(async () => {
+            // await getRouters()
+            next({ path: to.path, query: to.query })
+          })
+          .catch(() => {
+            localStorage.removeItem('ymToken')
+            next({ name: 'Login' })
+          })
+      }
+    } else {
+      next({ name: 'Login' })
+    }
+  }
+})
 
 export default router

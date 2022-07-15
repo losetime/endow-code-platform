@@ -38,7 +38,7 @@ const store = createStore({
      */
     async GetUserInfo({ commit }) {
       const { code, data } = await apiGetUserInfo()
-      if (code === 200) {
+      if (code === 20000) {
         const userInfo = {
           userName: data.user.userName,
           userId: data.user.userId,

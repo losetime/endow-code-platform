@@ -105,7 +105,7 @@ const onSearchTree = (val: string) => {
  */
 const getDepartmentList = async () => {
   const { code, data } = await apiGetDepartmentList()
-  if (code === 200) {
+  if (code === 20000) {
     treeList.value = data
     deptId.value = data[0].id
     tableInstance.value.getSourceData()
@@ -166,7 +166,7 @@ const getUserList = async () => {
 const handleDel = (userId: number) => {
   YmModal.delete(async () => {
     const { code } = await apiDeleteUser({ userId })
-    if (code === 200) {
+    if (code === 20000) {
       message.success('删除成功')
       tableInstance.value.getSourceData()
     }
@@ -179,7 +179,7 @@ const handleDel = (userId: number) => {
 const changeUserStatus = async (checked: string, record: any) => {
   const { userId } = record
   const { code } = await apiModifyUserStatus({ status: checked, userId })
-  if (code === 200) {
+  if (code === 20000) {
     tableInstance.value.getSourceData()
     message.success(checked === '0' ? '已启用' : '已停用')
   }

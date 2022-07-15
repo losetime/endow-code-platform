@@ -48,7 +48,7 @@ const initModal = (initInfo: any) => {
 const handleConfirm = () => {
   validate().then(async () => {
     const { code } = await apiModifyPassword({ ...detailInfo })
-    if (code === 200) {
+    if (code === 20000) {
       message.success('修改用户密码成功')
       handleCancel()
     }

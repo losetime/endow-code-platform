@@ -1,20 +1,21 @@
 <template>
-  <div class="inspection-solution-wrapper">
+  <div class="project-code-wrapper">
     <div class="handle-wrap">
       <a-space>
-        <a-input v-model:value="searchParams.name" placeholder="请输入企业名称" allowClear />
-        <a-input v-model:value="searchParams.licenseCode" placeholder="请输入统一社会信用代码" allowClear />
+        <a-input v-model:value="searchParams.name" placeholder="请输入工程名称" allowClear />
+        <a-input v-model:value="searchParams.projectCode" placeholder="请输入工程编码" allowClear />
         <a-button type="primary" @click="onSearch">查询</a-button>
       </a-space>
     </div>
     <a-space class="download-wrap">
-      <a-button type="primary" @click="handleDownloadCode">下载二维码</a-button>
+      <a-button type="primary" @click="handleDownloadInfoCode">下载工程信息码</a-button>
+      <a-button type="primary" @click="handleDownloadSignInCode">下载工程签到码</a-button>
     </a-space>
     <div class="table-wrap">
       <ym-table
         rowKey="id"
-        :columns="EnterpriseCodeColumns"
-        :getTableList="apiGetEnterpriseCodeList"
+        :columns="ProjectCodeColumns"
+        :getTableList="apiGetProjectCodeList"
         :params="searchParams"
         ref="tableInstance"
       >
@@ -23,21 +24,24 @@
         </template>
         <template #action="{ record }">
           <a-space>
-            <a-button type="link" size="small" @click="checkQRCode(record)">查看二维码</a-button>
+            <a-button type="link" size="small" @click="checkProjectInfoCode(record)">工程信息码</a-button>
+            <a-button type="link" size="small" @click="checkProjectSignInCode(record)">工程签到码</a-button>
           </a-space>
         </template>
       </ym-table>
     </div>
-    <enterprise-code-detail ref="detailInstance" />
+    <project-code-detail ref="detailInstance" />
+    <project-code-sign-in ref="signInInstance" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue'
 import YmTable from '@/components/common/YmTable.vue'
-import EnterpriseCodeDetail from '@/components/home/EnterpriseCodeDetail.vue'
-import { apiGetEnterpriseCodeList } from '@/service/api/home'
-import { EnterpriseCodeColumns } from '@/columns/home'
+import ProjectCodeDetail from '@/components/home/ProjectCodeDetail.vue'
+import ProjectCodeSignIn from '@/components/home/ProjectCodeSignIn.vue'
+import { apiGetProjectCodeList } from '@/service/api/home'
+import { ProjectCodeColumns } from '@/columns/home'
 import { formatQRcodeText, formatQRcodeColor } from '@/enums/homeEnum'
 
 /**
@@ -48,10 +52,7 @@ import { formatQRcodeText, formatQRcodeColor } from '@/enums/homeEnum'
 const tableInstance = ref()
 
 // 搜索参数
-const searchParams = reactive({ name: '', licenseCode: '' })
-
-// 选择表格
-const selectedRowKeys = computed(() => (tableInstance.value ? tableInstance.value.selectedRowKeys : []))
+const searchParams = reactive({ name: '', projectCode: '' })
 
 /**
  * @desc 列表搜索
@@ -60,10 +61,20 @@ const onSearch = () => {
   tableInstance.value.handleReacquire()
 }
 
+// 选择表格
+const selectedRowKeys = computed(() => (tableInstance.value ? tableInstance.value.selectedRowKeys : []))
+
 /**
- * @desc 下载二维码
+ * @desc 下载信息二维码
  */
-const handleDownloadCode = () => {
+const handleDownloadInfoCode = () => {
+  console.log(selectedRowKeys)
+}
+
+/**
+ * @desc 下载签到码
+ */
+const handleDownloadSignInCode = () => {
   console.log(selectedRowKeys)
 }
 
@@ -76,13 +87,22 @@ const detailInstance = ref()
 /**
  * @desc 查看二维码
  */
-const checkQRCode = (record: any) => {
+const checkProjectInfoCode = (record: any) => {
   detailInstance.value.initModal(record)
+}
+
+const signInInstance = ref()
+
+/**
+ * @desc 查看工程签到码
+ */
+const checkProjectSignInCode = (record: any) => {
+  signInInstance.value.initModal(record)
 }
 </script>
 
 <style lang="less" scoped>
-.inspection-solution-wrapper {
+.project-code-wrapper {
   height: 100%;
   .handle-wrap {
     display: flex;

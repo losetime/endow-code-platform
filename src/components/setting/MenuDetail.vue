@@ -144,7 +144,7 @@ const initModal = async (type: number, initInfo: any) => {
  */
 const getMenuTreeOptions = async () => {
   const { code, data } = await apiGetMenuTree()
-  if (code === 200) {
+  if (code === 20000) {
     menuTreeOptions.value = [
       {
         label: '主类目',
@@ -161,7 +161,7 @@ const getMenuTreeOptions = async () => {
  */
 const getMenuDetail = async () => {
   const { code, data } = await apiGetMenuDetail({ menuId: menuId.value })
-  if (code === 200) {
+  if (code === 20000) {
     const {
       parentId,
       menuType,
@@ -205,13 +205,13 @@ const handleConfirm = () => {
   validate(validateField).then(async () => {
     if (handleType.value === actionTypeEnum.ADD) {
       const { code } = await apiAddMenuDetail({ ...detailInfo })
-      if (code === 200) {
+      if (code === 20000) {
         message.success('添加菜单成功')
         props.handleRefresh()
       }
     } else {
       const { code } = await apiUpdateMenuDetail({ ...detailInfo, menuId: menuId.value })
-      if (code === 200) {
+      if (code === 20000) {
         message.success('更新菜单成功')
         props.getSourceData()
       }

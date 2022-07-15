@@ -1,9 +1,10 @@
 <template>
-  <div class="inspection-solution-wrapper">
+  <div class="people-code-wrapper">
     <div class="handle-wrap">
       <a-space>
-        <a-input v-model:value="searchParams.name" placeholder="请输入企业名称" allowClear />
-        <a-input v-model:value="searchParams.licenseCode" placeholder="请输入统一社会信用代码" allowClear />
+        <a-input v-model:value="searchParams.name" placeholder="请输入姓名" allowClear />
+        <a-input v-model:value="searchParams.identity" placeholder="请输入身份证号" allowClear />
+        <a-input v-model:value="searchParams.mobile" placeholder="请输入联系电话" allowClear />
         <a-button type="primary" @click="onSearch">查询</a-button>
       </a-space>
     </div>
@@ -13,8 +14,8 @@
     <div class="table-wrap">
       <ym-table
         rowKey="id"
-        :columns="EnterpriseCodeColumns"
-        :getTableList="apiGetEnterpriseCodeList"
+        :columns="PeopleCodeColumns"
+        :getTableList="apiGetPeopleCodeList"
         :params="searchParams"
         ref="tableInstance"
       >
@@ -28,16 +29,16 @@
         </template>
       </ym-table>
     </div>
-    <enterprise-code-detail ref="detailInstance" />
+    <people-code-detail ref="detailInstance" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue'
 import YmTable from '@/components/common/YmTable.vue'
-import EnterpriseCodeDetail from '@/components/home/EnterpriseCodeDetail.vue'
-import { apiGetEnterpriseCodeList } from '@/service/api/home'
-import { EnterpriseCodeColumns } from '@/columns/home'
+import PeopleCodeDetail from '@/components/home/PeopleCodeDetail.vue'
+import { apiGetPeopleCodeList } from '@/service/api/home'
+import { PeopleCodeColumns } from '@/columns/home'
 import { formatQRcodeText, formatQRcodeColor } from '@/enums/homeEnum'
 
 /**
@@ -48,7 +49,7 @@ import { formatQRcodeText, formatQRcodeColor } from '@/enums/homeEnum'
 const tableInstance = ref()
 
 // 搜索参数
-const searchParams = reactive({ name: '', licenseCode: '' })
+const searchParams = reactive({ name: '', mobile: '', identity: '' })
 
 // 选择表格
 const selectedRowKeys = computed(() => (tableInstance.value ? tableInstance.value.selectedRowKeys : []))
@@ -82,7 +83,7 @@ const checkQRCode = (record: any) => {
 </script>
 
 <style lang="less" scoped>
-.inspection-solution-wrapper {
+.people-code-wrapper {
   height: 100%;
   .handle-wrap {
     display: flex;

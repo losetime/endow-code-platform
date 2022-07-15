@@ -104,7 +104,7 @@ const arrayToTree = (arr: any[], pid: number) => {
  */
 const getDicts = async () => {
   const { code, data } = await apiGetDicts({ typeKey: 'sys_normal_disable' })
-  if (code === 200) {
+  if (code === 20000) {
     statusOptions.value = data
   }
 }
@@ -123,7 +123,7 @@ const parseDicts = (key: any) => {
 const handleDel = (menuId: number) => {
   YmModal.delete(async () => {
     const { code } = await apiDelMenuList({ menuId })
-    if (code === 200) {
+    if (code === 20000) {
       message.success('删除成功')
       getSourceData()
     }

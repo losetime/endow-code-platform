@@ -1,30 +1,51 @@
 {
-  "id": "3188365",
+  "id": "3514250",
   "name": "赋码平台",
   "font_family": "iconfont",
   "css_prefix_text": "icon-",
   "description": "",
   "glyphs": [
     {
-      "icon_id": "24259186",
-      "name": "用户头像-男",
-      "font_class": "nan_7",
-      "unicode": "e611",
-      "unicode_decimal": 58897
+      "icon_id": "1304896",
+      "name": "用户",
+      "font_class": "yonghu",
+      "unicode": "e624",
+      "unicode_decimal": 58916
     },
     {
-      "icon_id": "3101153",
-      "name": "1在线监测",
-      "font_class": "zaixianjiance",
-      "unicode": "e613",
-      "unicode_decimal": 58899
+      "icon_id": "16077883",
+      "name": "统计",
+      "font_class": "tongji",
+      "unicode": "e680",
+      "unicode_decimal": 59008
     },
     {
-      "icon_id": "3279356",
-      "name": "辅助决策",
-      "font_class": "gaiicon-",
-      "unicode": "e6d4",
-      "unicode_decimal": 59092
+      "icon_id": "5735298",
+      "name": "工程-85",
+      "font_class": "gongcheng-1",
+      "unicode": "e757",
+      "unicode_decimal": 59223
+    },
+    {
+      "icon_id": "77191",
+      "name": "二维码",
+      "font_class": "erweima",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "557076",
+      "name": "shensu",
+      "font_class": "shensu",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "9752800",
+      "name": "企业",
+      "font_class": "qiye",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
     }
   ]
 }

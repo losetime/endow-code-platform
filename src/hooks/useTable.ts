@@ -27,7 +27,7 @@ const useTable = (getTableData: Function, tableParams?: Object, isImmediately?: 
     const params = Object.keys(tempParams).length > 0 ? { ...reqParams, ...tableParams } : reqParams
     getTableData(params).then((res: any) => {
       tableData.loading = false
-      if (res.code === 200) {
+      if (res.code === 20000) {
         if (res.data.records.length <= 0 && reqParams.current > 1) {
           reqParams.current -= 1
           getSourceData()

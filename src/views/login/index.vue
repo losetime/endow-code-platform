@@ -65,7 +65,7 @@ import { loginRules } from '@/validator/login'
 import { apiGetCodeImage, apiSubmitLogin } from '@/service/api/login'
 import { useRouter } from 'vue-router'
 import { useStore } from '@/store'
-import { getRouters } from '@/router'
+// import { getRouters } from '@/router'
 
 const labelCol = { span: 0 }
 
@@ -94,7 +94,7 @@ onMounted(() => {
 
 const getCode = async () => {
   const { code, data } = await apiGetCodeImage()
-  if (code === 200) {
+  if (code === 20000) {
     codeUrl.value = 'data:image/gif;base64,' + data.img
     loginInfo.uuid = data.uuid
   }
@@ -110,10 +110,10 @@ const loginSubmit = () => {
       uuid: loginInfo.uuid,
     })
     loginLoading.value = false
-    if (code === 200) {
+    if (code === 20000) {
       store.commit('SET_TOKEN', data.token)
       localStorage.setItem('ymToken', data.token)
-      await getRouters()
+      // await getRouters()
       // 获取路由第一个
       const firstLevelRoute = router.getRoutes().filter((val) => val.meta.level === 1)
       const routerName = firstLevelRoute[0].name

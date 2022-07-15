@@ -1,5 +1,5 @@
 {
-  "name": "data-center",
+  "name": "endow-code-platform",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
@@ -15,6 +15,7 @@
     "echarts": "^5.3.3",
     "lodash-es": "^4.17.21",
     "nanoid": "^4.0.0",
+    "qrcode": "^1.5.1",
     "screenfull": "^5.1.0",
     "vue": "^3.2.20",
     "vue-router": "4",
@@ -23,7 +24,9 @@
   "devDependencies": {
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^15.0.0",
+    "@types/lodash-es": "^4.17.6",
     "@types/node": "^16.10.1",
+    "@types/qrcode": "^1.4.2",
     "@typescript-eslint/eslint-plugin": "^5.8.0",
     "@typescript-eslint/parser": "^5.8.0",
     "@vitejs/plugin-vue": "^1.9.0",

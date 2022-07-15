@@ -1,5 +1,7 @@
 import type { AxiosResponse } from 'axios'
 import { isString, isObject } from 'lodash-es'
+import { formatQRcodeColor } from '@/enums/homeEnum'
+import QRCode from 'qrcode'
 
 /**
  * @description: 将对象作为参数添加到URL
@@ -172,4 +174,27 @@ export const isVisibleRoute = (route: any) => {
   } else {
     return false
   }
+}
+
+/**
+ * @desc 生成二维码
+ */
+export const createQRCode = (text: string, color: string): string => {
+  let imgUrl = ''
+  const opts: any = {
+    errorCorrectionLevel: 'H',
+    type: 'image/jpeg',
+    quality: 0.3,
+    margin: 1,
+    color: {
+      dark: formatQRcodeColor(color),
+      light: '#FFFFFF',
+    },
+    width: 300,
+  }
+  QRCode.toDataURL(text, opts, function (err: any, url: string) {
+    if (err) throw err
+    imgUrl = url
+  })
+  return imgUrl
 }

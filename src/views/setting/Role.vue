@@ -92,7 +92,7 @@ const getRoleList = async () => {
 const handleDel = (roleId: number) => {
   YmModal.delete(async () => {
     const { code } = await apiDeleteRole({ roleId })
-    if (code === 200) {
+    if (code === 20000) {
       message.success('删除成功')
       getSourceData()
     }
@@ -105,7 +105,7 @@ const handleDel = (roleId: number) => {
 const changeUserStatus = async (checked: string, record: any) => {
   const { roleId } = record
   const { code } = await apiModifyRoleStatus({ status: checked, roleId })
-  if (code === 200) {
+  if (code === 20000) {
     message.success(checked === '0' ? '已启用' : '已停用')
     getSourceData()
   }

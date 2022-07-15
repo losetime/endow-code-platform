@@ -59,7 +59,7 @@
     </div>
     <div class="row-wrap">
       <div class="row-item-wrap">
-        <p class="chart-title">企业码概况</p>
+        <p class="chart-title">近12个月赋码数量</p>
         <div class="chart-wrap">
           <Bar :series="barData.series" :x-axis="barData.xAxis" />
         </div>

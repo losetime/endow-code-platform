@@ -95,7 +95,7 @@ const onLogout = () => {
     icon: createVNode(ExclamationCircleOutlined),
     async onOk() {
       const { code } = await apiSignOut()
-      if (code === 200) {
+      if (code === 20000) {
         localStorage.removeItem('ymToken')
         store.commit('SET_TOKEN', '')
         router.replace({ path: '/login' })
@@ -109,7 +109,8 @@ const onLogout = () => {
 .header-wrapper {
   display: flex;
   justify-content: space-between;
-  background-color: #015c61;
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0px 1px 4px 0px rgba(0, 21, 41, 0.12);
   .header-left-wrap {
     height: 64px;
     display: flex;
@@ -119,6 +120,7 @@ const onLogout = () => {
       display: flex;
       justify-content: center;
       align-items: center;
+      background-color: rgba(0, 21, 41, 1);
       img {
         width: 35px;
         height: 35px;
