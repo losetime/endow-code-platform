@@ -31,136 +31,6 @@ const routes = [
     name: 'Login',
     component: () => import('../views/login/index.vue'),
   },
-  {
-    path: '/home',
-    name: 'Home',
-    component: Layout,
-    redirect: '/home/overview',
-    meta: {
-      title: '主页',
-      level: 1,
-      visible: false,
-    },
-    children: [
-      {
-        path: 'overview',
-        name: 'Overview',
-        components: {
-          default: Header,
-          sidebar: Sidebar,
-          breadcrumb: Breadcrumb,
-          main: () => import('../views/home/Overview.vue'),
-        },
-        meta: {
-          title: '首页',
-          level: 2,
-          visible: true,
-          icon: 'icon-tongji',
-        },
-        children: [],
-      },
-      {
-        path: 'enterprise-code',
-        name: 'EnterpriseCode',
-        components: {
-          default: Header,
-          sidebar: Sidebar,
-          breadcrumb: Breadcrumb,
-          main: () => import('../views/home/EnterpriseCode.vue'),
-        },
-        meta: {
-          title: '企业码',
-          level: 2,
-          visible: true,
-          icon: 'icon-qiye',
-        },
-        children: [],
-      },
-      {
-        path: 'people-code',
-        name: 'PeopleCode',
-        components: {
-          default: Header,
-          sidebar: Sidebar,
-          breadcrumb: Breadcrumb,
-          main: () => import('../views/home/PeopleCode.vue'),
-        },
-        meta: {
-          title: '人员码',
-          level: 2,
-          visible: true,
-          icon: 'icon-yonghu',
-        },
-        children: [],
-      },
-      {
-        path: 'project-code',
-        name: 'ProjectCode',
-        components: {
-          default: Header,
-          sidebar: Sidebar,
-          breadcrumb: Breadcrumb,
-          main: () => import('../views/home/ProjectCode.vue'),
-        },
-        meta: {
-          title: '工程码',
-          level: 2,
-          visible: true,
-          icon: 'icon-gongcheng-1',
-        },
-        children: [],
-      },
-      {
-        path: 'code-convert',
-        name: 'CodeConvert',
-        components: {
-          default: Header,
-          sidebar: Sidebar,
-          breadcrumb: Breadcrumb,
-          main: () => import('../views/home/CodeConvert.vue'),
-        },
-        meta: {
-          title: '码转色',
-          level: 2,
-          visible: true,
-          icon: 'icon-erweima',
-        },
-        children: [
-          {
-            path: 'convert-code-detail',
-            name: 'ConvertCodeDetail',
-            components: {
-              mainSub: () => import('../components/home/ConvertCodeDetail.vue'),
-            },
-            meta: {
-              title: '转换二维码颜色',
-              level: 3,
-              visible: false,
-              icon: '#',
-            },
-            children: [],
-          },
-        ],
-      },
-      {
-        path: 'appeal-manage',
-        name: 'AppealManage',
-        components: {
-          default: Header,
-          sidebar: Sidebar,
-          breadcrumb: Breadcrumb,
-          main: () => import('../views/home/AppealManage.vue'),
-        },
-        meta: {
-          title: '申诉管理',
-          level: 2,
-          visible: true,
-          icon: 'icon-shensu',
-        },
-        children: [],
-      },
-    ],
-  },
 ]
 
 const specialRoute = ['Overview', 'FlowDesign']
@@ -172,8 +42,11 @@ export const getRouters = async () => {
   const { code, data } = await apiGetRoutersInfo()
   if (code === 20000) {
     const routesInfo = formattRouter(data, [])
+    console.log(routesInfo)
     routesInfo.forEach((item) => {
-      router.addRoute(item)
+      if (item.name !== 'SettingCenter') {
+        router.addRoute(item)
+      }
     })
   }
 }
@@ -271,7 +144,7 @@ router.beforeEach((to, _from, next) => {
       store
         .dispatch('GetUserInfo')
         .then(async () => {
-          // await getRouters()
+          await getRouters()
           next({ name: 'Overview' })
         })
         .catch(() => {
@@ -290,7 +163,7 @@ router.beforeEach((to, _from, next) => {
         store
           .dispatch('GetUserInfo')
           .then(async () => {
-            // await getRouters()
+            await getRouters()
             next({ path: to.path, query: to.query })
           })
           .catch(() => {

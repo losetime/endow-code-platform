@@ -9,14 +9,14 @@
             :options="transcodeTypeOptions"
             allowClear
             placeholder="请选择转换对象类型"
-            :disabled="disableEdit"
+            :disabled="isEdit || isCheck"
           />
         </a-form-item>
         <a-form-item label="唯一编码" :extra="detailInfo.name">
           <a-input
             v-model:value="detailInfo.targetCode"
             placeholder="请输入工程编码/统一社会信用代码/身份证号"
-            :disabled="disableEdit"
+            :disabled="isEdit || isCheck"
             @blur="handleQueryCodeInfo"
           />
         </a-form-item>
@@ -26,32 +26,42 @@
             :options="codeColorTypeOptions"
             allowClear
             placeholder="请选择转换后码颜色"
+            :disabled="isCheck"
           />
         </a-form-item>
         <a-form-item label="转码原因">
-          <a-textarea v-model:value="detailInfo.reason" :rows="4" placeholder="请输入转码原因" />
+          <a-textarea v-model:value="detailInfo.reason" :rows="4" placeholder="请输入转码原因" :disabled="isCheck" />
         </a-form-item>
         <a-form-item label="添加附件">
           <a-upload
             v-model:file-list="attachmentList"
             action="#"
-            list-type="picture"
-            :before-upload="beforeUpload"
-            accept=".jpg, .jpeg"
+            list-type="picture-card"
+            :before-upload="false"
+            accept=".jpg, .jpeg, .png"
+            :disabled="isCheck"
           >
-            <a-button> <upload-outlined />请选择文件 </a-button>
+            <div v-if="attachmentList.length < 5">
+              <upload-outlined />
+              <div style="margin-top: 8px">请选择文件</div>
+            </div>
           </a-upload>
         </a-form-item>
         <a-form-item
           label="请设置转码时限"
           extra="设置的时限内，二维码颜色会保持您当前设置的转码颜色不变更，到期后系统将依据赋码规则，重新赋码"
         >
-          <a-date-picker v-model:value="detailInfo.codeExpire" valueFormat="YYYY-MM-DD HH:mm:ss" show-time />
+          <a-date-picker
+            v-model:value="detailInfo.codeExpire"
+            valueFormat="YYYY-MM-DD HH:mm:ss"
+            show-time
+            :disabled="isCheck"
+          />
         </a-form-item>
       </a-form>
     </div>
-    <div class="handle-wrap">
-      <a-button type="primary" @click="handleConfirm">确定</a-button>
+    <div class="handle-wrap" v-if="!isCheck">
+      <a-button type="primary" :loading="confirmLoading" @click="handleConfirm">确定</a-button>
     </div>
   </div>
 </template>
@@ -63,6 +73,7 @@ import { transcodeTypeOptions, codeColorTypeOptions } from '@/enums/homeEnum'
 import { apiGetTargetCodeInfo, apiSaveTranscodeInfo, apiGetTranscodeDetail } from '@/service/api/home'
 import { useRoute } from 'vue-router'
 import { actionTypeEnum } from '@/enums/commonEnum'
+import { message } from 'ant-design-vue'
 
 const route = useRoute()
 
@@ -76,15 +87,21 @@ const detailInfo = reactive<any>({
   targetId: '',
 })
 
+const detailId = ref('')
+
 const handleType = ref<number>(actionTypeEnum.ADD)
 
-const disableEdit = computed(() => handleType.value === actionTypeEnum.EDIT)
+const attachmentList = ref<any[]>([])
 
-const attachmentList = ref([])
+const confirmLoading = ref(false)
+
+const isEdit = computed(() => handleType.value === actionTypeEnum.EDIT)
+
+const isCheck = computed(() => handleType.value === actionTypeEnum.CHECK)
 
 onMounted(() => {
-  if (route.query.id) {
-    handleType.value = actionTypeEnum.EDIT
+  if (route.query.handleType !== undefined) {
+    handleType.value = parseInt(route.query.handleType as string)
     getTranscodeDetail()
   }
 })
@@ -111,7 +128,8 @@ const handleQueryCodeInfo = async () => {
 const getTranscodeDetail = async () => {
   const { code, data } = await apiGetTranscodeDetail({ id: route.query.id as string })
   if (code === 20000) {
-    const { type, targetCode, targetCodeColor, reason, codeExpire, name, targetId } = data
+    const { id, type, targetCode, targetCodeColor, reason, codeExpire, name, targetId } = data
+    detailId.value = id
     Object.assign(detailInfo, {
       type,
       targetCode,
@@ -121,27 +139,44 @@ const getTranscodeDetail = async () => {
       name,
       targetId,
     })
+    if (Array.isArray(data.attachmentList)) {
+      attachmentList.value = data.attachmentList.map((item: any, index: number) => ({
+        uid: index,
+        status: 'done',
+        url: item,
+      }))
+    }
   }
-}
-
-/**
- * @desc 文件上传之前
- */
-const beforeUpload = () => {
-  return false
 }
 
 /**
  * @desc 提交信息
  */
 const handleConfirm = async () => {
-  const params = { ...detailInfo }
-  attachmentList.value.forEach((item: any, index: number) => {
-    params['attachment' + index] = item.originFileObj
-  })
-  const { code, data } = await apiSaveTranscodeInfo(params)
+  let params = { ...detailInfo }
+  if (handleType.value === actionTypeEnum.EDIT) {
+    params = { ...params, id: detailId.value }
+  }
+  for (let [index, item] of attachmentList.value.entries()) {
+    if (item.size && item.size > 3145728) {
+      message.warning(`第${index + 1}张图片大于3M，请重新上传`)
+      return
+    }
+    if (item.status === 'done') {
+      params['attExist'] = params['attExist'] ? `${params['attExist']},${item.url}` : item.url
+    } else {
+      params['attachment' + index] = item.originFileObj
+    }
+  }
+  confirmLoading.value = true
+  const { code } = await apiSaveTranscodeInfo(params)
+  confirmLoading.value = false
   if (code === 20000) {
-    console.log(data)
+    if (handleType.value === actionTypeEnum.ADD) {
+      message.success('新增成功')
+    } else {
+      message.success('编辑成功')
+    }
   }
 }
 </script>

@@ -20,9 +20,11 @@
       >
         <template #action="{ record }">
           <a-space>
-            <a-button type="link" size="small" @click="handleRelease(record)">发布</a-button>
+            <a-button type="link" size="small" @click="handleRelease(record)">
+              {{ record.status === '0' ? '发布' : '取消发布' }}
+            </a-button>
             <a-button type="link" size="small" @click="handleCheck(record)">查看</a-button>
-            <a-button type="link" size="small" @click="handleEdit(record)">编辑</a-button>
+            <a-button type="link" size="small" @click="handleEdit(record)" v-if="record.status === '0'">编辑</a-button>
           </a-space>
         </template>
       </ym-table>
@@ -33,11 +35,12 @@
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue'
 import YmTable from '@/components/common/YmTable.vue'
-import { apiGetTranscodeList, apiDeleteTranscode } from '@/service/api/home'
+import { apiGetTranscodeList, apiDeleteTranscode, apiSaveTranscodeInfo } from '@/service/api/home'
 import { CodeConvertColumns } from '@/columns/home'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
 import { YmModal } from '@/utils/antd'
+import { actionTypeEnum } from '@/enums/commonEnum'
 
 /**
  ********************************* 表格操作 ******************************************
@@ -79,29 +82,37 @@ const router = useRouter()
 const addConvertCodeRule = () => {
   router.push({
     name: 'ConvertCodeDetail',
+    query: {
+      handleType: actionTypeEnum.ADD,
+    },
   })
 }
 
 /**
  * @desc 发布/取消发布
  */
-const handleRelease = (record: any) => {
-  router.push({
-    name: 'EditInspectionSolution',
-    query: {
-      id: record.id,
-    },
-  })
+const handleRelease = async (record: any) => {
+  const { id, status } = record
+  const { code } = await apiSaveTranscodeInfo({ id, status: status === '0' ? '1' : '0' })
+  if (code === 20000) {
+    if (status === '0') {
+      message.success('发布成功')
+    } else {
+      message.success('取消发布成功')
+    }
+    onSearch()
+  }
 }
 
 /**
- * @desc 查看二维码
+ * @desc 查看详情
  */
 const handleCheck = (record: any) => {
   router.push({
-    name: 'EditInspectionSolution',
+    name: 'ConvertCodeDetail',
     query: {
       id: record.id,
+      handleType: actionTypeEnum.CHECK,
     },
   })
 }
@@ -114,6 +125,7 @@ const handleEdit = (record: any) => {
     name: 'ConvertCodeDetail',
     query: {
       id: record.id,
+      handleType: actionTypeEnum.EDIT,
     },
   })
 }

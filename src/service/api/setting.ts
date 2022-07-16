@@ -12,6 +12,8 @@ import {
   IAddMenuDetail,
   IGetDeptList,
   IAddDept,
+  // IGetLogsList,
+  // IUpdatePassword,
 } from '../types/setting'
 
 enum Api {
@@ -19,6 +21,7 @@ enum Api {
   getUserList = '/usermanager/system/user/list',
   modifyUserStatus = '/usermanager/system/user/changeStatus',
   handleUserDetail = '/usermanager/system/user',
+  updateUser = '/usermanager/system/user/edit',
   modifyPassword = '/usermanager/system/user/resetPwd',
 
   getRoleList = '/usermanager/system/role/list',
@@ -26,14 +29,24 @@ enum Api {
   getMenuTree = '/usermanager/system/menu/treeselect',
   getSelectedMenuTree = '/usermanager/system/menu/roleMenuTreeselect',
   getRoleDetail = '/usermanager/system/role',
+  updateRoleDetail = '/usermanager/system/role/edit',
 
   getMenuList = '/usermanager/system/menu/list',
   getMenuDetail = '/usermanager/system/menu',
+  updateMenuDetail = '/usermanager/system/menu/edit',
 
   handleDeptDetail = '/usermanager/system/dept/list',
   delDept = '/usermanager/system/dept',
   getDeptDetail = '/usermanager/system/dept',
-  updateDept = '/usermanager/system/dept',
+  addDateDept = '/usermanager/system/dept',
+  updateDept = '/usermanager/system/dept/edit',
+
+  getLogsList = '/usermanager/monitor/operlog/list',
+  exportLogs = '/usermanager/monitor/operlog/export',
+
+  getUserInfo = '/usermanager/system/user/profile',
+  updatePassword = '/usermanager/system/user/profile/updatePwd',
+  killUser = '/usermanager/system/user/profile/cancelled',
 }
 
 // -------------------------------------- 用户管理 -----------------------------------------------
@@ -65,7 +78,7 @@ export function apiGetUserList(params: IGetUserList): Promise<any> {
 export function apiModifyUserStatus(params: IModifyUserStatus): Promise<any> {
   return $http.request({
     url: Api.modifyUserStatus,
-    method: 'PUT',
+    method: 'POST',
     params,
   })
 }
@@ -97,8 +110,8 @@ export function apiAddUser(params: IAddUser): Promise<any> {
  */
 export function apiUpdateUser(params: IAddUser): Promise<any> {
   return $http.request({
-    url: Api.handleUserDetail,
-    method: 'PUT',
+    url: Api.updateUser,
+    method: 'POST',
     params,
   })
 }
@@ -109,7 +122,7 @@ export function apiUpdateUser(params: IAddUser): Promise<any> {
 export function apiDeleteUser(params: { userId: number }): Promise<any> {
   return $http.request({
     url: Api.handleUserDetail + `/${params.userId}`,
-    method: 'DELETE',
+    method: 'POST',
   })
 }
 
@@ -119,7 +132,7 @@ export function apiDeleteUser(params: { userId: number }): Promise<any> {
 export function apiModifyPassword(params: IModifyPassword) {
   return $http.request({
     url: Api.modifyPassword,
-    method: 'PUT',
+    method: 'POST',
     params,
   })
 }
@@ -143,7 +156,7 @@ export function apiGetRoleList(params: IGetRoleList) {
 export function apiDeleteRole(params: { roleId: number }) {
   return $http.request({
     url: Api.getRoleDetail + `/${params.roleId}`,
-    method: 'DELETE',
+    method: 'POST',
   })
 }
 
@@ -153,7 +166,7 @@ export function apiDeleteRole(params: { roleId: number }) {
 export function apiModifyRoleStatus(params: IModifyRoleStatus): Promise<any> {
   return $http.request({
     url: Api.modifyRoleStatus,
-    method: 'PUT',
+    method: 'POST',
     params,
   })
 }
@@ -205,8 +218,8 @@ export function apiAddRole(params: IAddRole): Promise<any> {
  */
 export function apiUpdateRole(params: IAddRole): Promise<any> {
   return $http.request({
-    url: Api.getRoleDetail,
-    method: 'PUT',
+    url: Api.updateRoleDetail,
+    method: 'POST',
     params,
   })
 }
@@ -230,7 +243,7 @@ export function apiGetMenuList(params: IGetMenuList): Promise<any> {
 export function apiDelMenuList(params: { menuId: number }): Promise<any> {
   return $http.request({
     url: Api.getMenuDetail + `/${params.menuId}`,
-    method: 'DELETE',
+    method: 'POST',
   })
 }
 
@@ -260,8 +273,8 @@ export function apiAddMenuDetail(params: IAddMenuDetail): Promise<any> {
  */
 export function apiUpdateMenuDetail(params: IAddMenuDetail): Promise<any> {
   return $http.request({
-    url: Api.getMenuDetail,
-    method: 'PUT',
+    url: Api.updateMenuDetail,
+    method: 'POST',
     params,
   })
 }
@@ -285,7 +298,7 @@ export function apiGetDeptList(params: IGetDeptList) {
 export function apiDeleteDept(params: { deptId: number }) {
   return $http.request({
     url: Api.delDept + `/${params.deptId}`,
-    method: 'DELETE',
+    method: 'POST',
   })
 }
 
@@ -304,7 +317,7 @@ export function apiGetDeptDetail(params: { deptId: number }) {
  */
 export function apiAddDept(params: IAddDept) {
   return $http.request({
-    url: Api.updateDept,
+    url: Api.addDateDept,
     method: 'POST',
     params,
   })
@@ -316,7 +329,65 @@ export function apiAddDept(params: IAddDept) {
 export function apiUpdateDept(params: IAddDept) {
   return $http.request({
     url: Api.updateDept,
-    method: 'PUT',
+    method: 'POST',
     params,
   })
 }
+
+// // -------------------------------------- 操作日志 -----------------------------------------------
+
+// /**
+//  * @desc 获取日志列表
+//  */
+// export function apiGetLogsList(params: IGetLogsList) {
+//   return $http.request({
+//     url: Api.getLogsList,
+//     method: 'GET',
+//     params,
+//   })
+// }
+
+// /**
+//  * @desc 导出日志
+//  */
+// export function apiExportLogs() {
+//   return $http.request({
+//     url: Api.exportLogs,
+//     method: 'GET',
+//     responseType: 'blob',
+//   })
+// }
+
+// -------------------------------------- 操作日志 -----------------------------------------------
+
+// /**
+//  * @desc 获取用户信息
+//  */
+// export function apiGetUserInfo() {
+//   return $http.request({
+//     url: Api.getUserInfo,
+//     method: 'GET',
+//   })
+// }
+
+// /**
+//  * @desc 获取用户信息
+//  */
+// export function apiUpdatePassword(params: IUpdatePassword) {
+//   return $http.request({
+//     url: Api.updatePassword,
+//     method: 'POST',
+//     params,
+//   })
+// }
+
+// /**
+//  * @desc 注销用户
+//  */
+// export function apiKillUser(params: { password: string }) {
+//   return $http.request({
+//     url: Api.killUser,
+//     method: 'POST',
+//     params,
+//   })
+// }

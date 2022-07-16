@@ -126,9 +126,10 @@ const onLogout = () => {
         height: 35px;
       }
       span {
-        font-size: 16px;
+        font-size: 18px;
+        font-weight: bold;
         color: #ffffff;
-        margin-left: 10px;
+        margin-left: 14px;
       }
     }
     ::v-deep(.ant-menu) {

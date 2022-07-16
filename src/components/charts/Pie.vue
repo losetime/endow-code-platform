@@ -3,11 +3,23 @@
 </template>
 
 <script setup lang="ts">
+import { watch } from 'vue'
 import useEcharts from '@/hooks/useEcharts'
 
 const props = defineProps<{
   series: any
+  color?: string[]
 }>()
+
+watch(
+  () => props.series,
+  () => {
+    if (props.series.length > 0) {
+      destroyInstance()
+      chartInit()
+    }
+  },
+)
 
 const formattValue = (val: string) => {
   return val ? parseInt(val) : 0
@@ -78,7 +90,7 @@ const chartInit = () => {
     trigger: 'item',
   }
   option.legend = handlePieLegend()
-  option.color = colorsEnum
+  option.color = props.color ? props.color : colorsEnum
   option.series = props.series
   option && chartInstance.value.setOption(option)
 }

@@ -6,46 +6,102 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1727563",
+      "name": "327全屏",
+      "font_class": "quanping",
+      "unicode": "e8fa",
+      "unicode_decimal": 59642
+    },
+    {
+      "icon_id": "1727566",
+      "name": "328退出全屏",
+      "font_class": "tuichuquanping",
+      "unicode": "e8fb",
+      "unicode_decimal": 59643
+    },
+    {
+      "icon_id": "7171125",
+      "name": "部门管理",
+      "font_class": "bumenguanli",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "7720058",
+      "name": "菜单",
+      "font_class": "caidan",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "10213489",
+      "name": "角色管理",
+      "font_class": "jiaoseguanli",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "24259186",
+      "name": "用户头像-男",
+      "font_class": "nan_7",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "1204",
+      "name": "向上",
+      "font_class": "xiangshang",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "30609424",
+      "name": "shensuguanli",
+      "font_class": "shensuguanli",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "30609467",
+      "name": "qiyeguanli",
+      "font_class": "qiyeguanli",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
+      "icon_id": "30609472",
+      "name": "renyuan",
+      "font_class": "renyuan",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "30609485",
+      "name": "shouye",
+      "font_class": "shouye",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "30609547",
+      "name": "码转色",
+      "font_class": "mazhuanse",
+      "unicode": "e64c",
+      "unicode_decimal": 58956
+    },
+    {
+      "icon_id": "30609638",
+      "name": "gongcheng",
+      "font_class": "gongcheng",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
       "icon_id": "1304896",
       "name": "用户",
       "font_class": "yonghu",
       "unicode": "e624",
       "unicode_decimal": 58916
-    },
-    {
-      "icon_id": "16077883",
-      "name": "统计",
-      "font_class": "tongji",
-      "unicode": "e680",
-      "unicode_decimal": 59008
-    },
-    {
-      "icon_id": "5735298",
-      "name": "工程-85",
-      "font_class": "gongcheng-1",
-      "unicode": "e757",
-      "unicode_decimal": 59223
-    },
-    {
-      "icon_id": "77191",
-      "name": "二维码",
-      "font_class": "erweima",
-      "unicode": "e600",
-      "unicode_decimal": 58880
-    },
-    {
-      "icon_id": "557076",
-      "name": "shensu",
-      "font_class": "shensu",
-      "unicode": "e628",
-      "unicode_decimal": 58920
-    },
-    {
-      "icon_id": "9752800",
-      "name": "企业",
-      "font_class": "qiye",
-      "unicode": "e60f",
-      "unicode_decimal": 58895
     }
   ]
 }

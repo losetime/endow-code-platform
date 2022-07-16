@@ -3,15 +3,15 @@
  */
 export const transcodeTypeOptions = [
   {
-    label: '企业',
+    label: '企业码',
     value: '1',
   },
   {
-    label: '人员',
+    label: '人员码',
     value: '2',
   },
   {
-    label: '工程',
+    label: '工程码',
     value: '3',
   },
 ]

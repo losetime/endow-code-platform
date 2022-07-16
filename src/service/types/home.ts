@@ -40,14 +40,27 @@ export interface IGetTargetCodeInfo {
   type: string
 }
 
+/**
+ * @desc 获取转码详情
+ */
 export interface ISaveTranscodeInfo {
   id?: number
-  type: string
-  targetCode: string
-  targetCodeColor: string
-  reason: string
-  codeExpire: string
-  name: string
-  targetId: string
-  attachmentList: any[]
+  status?: string
+  type?: string
+  targetCode?: string
+  targetCodeColor?: string
+  reason?: string
+  codeExpire?: string
+  name?: string
+  targetId?: string
+  attachmentList?: any[]
+}
+
+/**
+ * @desc 获取申诉列表
+ */
+export interface IGetAppealManageList extends IPaging {
+  status: string
+  name?: string
+  type?: string
 }

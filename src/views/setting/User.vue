@@ -131,14 +131,14 @@ const deptId = ref(-1)
  * @desc 列表刷新
  */
 const handleRefresh = () => {
-  tableInstance.value.handleRefresh()
+  tableInstance.value.handleReacquire(1)
 }
 
 /**
  * @desc 重新获取当前页列表
  */
 const getSourceData = () => {
-  tableInstance.value.getSourceData()
+  tableInstance.value.handleReacquire()
 }
 
 /**

@@ -7,6 +7,7 @@ import {
   IGetTranscodeList,
   IGetTargetCodeInfo,
   ISaveTranscodeInfo,
+  IGetAppealManageList,
 } from '../types/home'
 
 enum Api {
@@ -18,7 +19,23 @@ enum Api {
   getTargetCodeInfo = '/ecode_grant/codeChange/getObjectInfo',
   saveTranscodeInfo = '/ecode_grant/codeChange/save',
   getTranscodeDetail = '/ecode_grant/codeChange/getDetail',
-  getAppealManageList = '',
+  getAppealManageList = '/ecode_grant/feedback/selectPage',
+  handleMarkProcessed = '/ecode_grant/feedback/deal',
+  getOverviewInfo = '/ecode_grant/dashboard/overview',
+}
+
+// -------------------------------------- 概览 -----------------------------------------------
+
+/**
+ * @desc: 获取概览信息
+ * @param: type: calSum、codeColorNum、yearNum
+ */
+export function apiGetOverviewInfo(params: { type: string }) {
+  return $http.request({
+    url: Api.getOverviewInfo,
+    method: 'GET',
+    params,
+  })
 }
 
 // -------------------------------------- 企业码 -----------------------------------------------
@@ -125,9 +142,20 @@ export function apiGetTranscodeDetail(params: { id: string }) {
 /**
  * @desc: 获取转码信息列表
  */
-export function apiGetAppealManageList(params: IGetTranscodeList) {
+export function apiGetAppealManageList(params: IGetAppealManageList) {
   return $http.request({
     url: Api.getAppealManageList,
+    method: 'GET',
+    params,
+  })
+}
+
+/**
+ * @desc: 标记为已处理
+ */
+export function apiHandleMarkProcessed(params: { id: string }) {
+  return $http.request({
+    url: Api.handleMarkProcessed,
     method: 'GET',
     params,
   })

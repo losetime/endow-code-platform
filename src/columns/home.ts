@@ -159,28 +159,33 @@ export const CodeConvertColumns = [
 export const NotHandleAppealColumns = [
   {
     title: '申诉对象类型',
-    dataIndex: 'createTime',
-    key: 'createTime',
+    customRender: ({ record }: { record: any }) => {
+      const findItem = transcodeTypeOptions.find((val: any) => val.value === record.type)
+      if (findItem) {
+        return findItem.label
+      } else {
+        return ''
+      }
+    },
   },
   {
     title: '申诉对象名称',
-    key: 'createTime',
-    dataIndex: 'createTime',
+    key: 'name',
+    dataIndex: 'name',
   },
   {
     title: '申诉对象编码',
-    key: 'createTime',
-    dataIndex: 'createTime',
+    key: 'objectCode',
+    dataIndex: 'objectCode',
   },
   {
     title: '码颜色',
-    key: 'createTime',
-    dataIndex: 'createTime',
+    key: 'slotOne',
   },
   {
     title: '申诉说明',
-    key: 'createTime',
-    dataIndex: 'createTime',
+    key: 'desc',
+    dataIndex: 'desc',
   },
   {
     title: '申诉时间',
@@ -201,28 +206,33 @@ export const NotHandleAppealColumns = [
 export const AlreadyHandleAppealColumns = [
   {
     title: '申诉对象类型',
-    dataIndex: 'createTime',
-    key: 'createTime',
+    customRender: ({ record }: { record: any }) => {
+      const findItem = transcodeTypeOptions.find((val: any) => val.value === record.type)
+      if (findItem) {
+        return findItem.label
+      } else {
+        return ''
+      }
+    },
   },
   {
     title: '申诉对象名称',
-    key: 'createTime',
-    dataIndex: 'createTime',
+    key: 'name',
+    dataIndex: 'name',
   },
   {
     title: '申诉对象编码',
-    key: 'createTime',
-    dataIndex: 'createTime',
+    key: 'objectCode',
+    dataIndex: 'objectCode',
   },
   {
     title: '码颜色',
-    key: 'createTime',
-    dataIndex: 'createTime',
+    key: 'slotOne',
   },
   {
     title: '申诉说明',
-    key: 'createTime',
-    dataIndex: 'createTime',
+    key: 'desc',
+    dataIndex: 'desc',
   },
   {
     title: '申诉时间',
@@ -231,7 +241,7 @@ export const AlreadyHandleAppealColumns = [
   },
   {
     title: '处理时间',
-    key: 'createTime',
-    dataIndex: 'createTime',
+    key: 'updateTime',
+    dataIndex: 'updateTime',
   },
 ]
