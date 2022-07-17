@@ -39,6 +39,8 @@ import EnterpriseCodeDetail from '@/components/home/EnterpriseCodeDetail.vue'
 import { apiGetEnterpriseCodeList } from '@/service/api/home'
 import { EnterpriseCodeColumns } from '@/columns/home'
 import { formatQRcodeText, formatQRcodeColor } from '@/enums/homeEnum'
+import { downloadQRCode } from '@/utils/base'
+import { createQRCode } from '@/utils/base'
 
 /**
  ********************************* 表格操作 ******************************************
@@ -51,7 +53,7 @@ const tableInstance = ref()
 const searchParams = reactive({ name: '', licenseCode: '' })
 
 // 选择表格
-const selectedRowKeys = computed(() => (tableInstance.value ? tableInstance.value.selectedRowKeys : []))
+const selectedRows = computed(() => (tableInstance.value ? tableInstance.value.selectedRows : []))
 
 /**
  * @desc 列表搜索
@@ -64,7 +66,11 @@ const onSearch = () => {
  * @desc 下载二维码
  */
 const handleDownloadCode = () => {
-  console.log(selectedRowKeys)
+  const base64Arr: string[] = []
+  selectedRows.value.forEach((item: any) => {
+    base64Arr.push(createQRCode(item.infoCode, item.codeColor))
+  })
+  downloadQRCode(base64Arr)
 }
 
 /**

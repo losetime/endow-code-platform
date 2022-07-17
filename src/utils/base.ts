@@ -2,6 +2,8 @@ import type { AxiosResponse } from 'axios'
 import { isString, isObject } from 'lodash-es'
 import { formatQRcodeColor } from '@/enums/homeEnum'
 import QRCode from 'qrcode'
+import JSZip from 'jszip'
+import { saveAs } from 'file-saver'
 
 /**
  * @description: 将对象作为参数添加到URL
@@ -194,7 +196,23 @@ export const createQRCode = (text: string, color: string): string => {
   }
   QRCode.toDataURL(text, opts, function (err: any, url: string) {
     if (err) throw err
+    console.log(url)
     imgUrl = url
   })
   return imgUrl
+}
+
+/**
+ * @desc 下载二维码
+ */
+export const downloadQRCode = (imgArr: string[]) => {
+  const zip = new JSZip()
+  const img: any = zip.folder('images')
+  imgArr.forEach((item: string) => {
+    img.file('smile.gif', item, { base64: true })
+  })
+  zip.generateAsync({ type: 'blob' }).then(function (content) {
+    // see FileSaver.js
+    saveAs(content, 'example.zip')
+  })
 }
