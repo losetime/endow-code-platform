@@ -77,6 +77,7 @@ const handleSelectKeys = ({ selectedKeys }: { selectedKeys: Array<string> }) => 
   // background: rgba(3, 21, 56, 1);
   .anticon {
     font-size: 20px;
+    // color: red;
   }
 }
 </style>

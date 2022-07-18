@@ -39,8 +39,7 @@ import EnterpriseCodeDetail from '@/components/home/EnterpriseCodeDetail.vue'
 import { apiGetEnterpriseCodeList } from '@/service/api/home'
 import { EnterpriseCodeColumns } from '@/columns/home'
 import { formatQRcodeText, formatQRcodeColor } from '@/enums/homeEnum'
-import { downloadQRCode } from '@/utils/base'
-import { createQRCode } from '@/utils/base'
+import { createQRCode, downloadQRCode } from '@/utils/base'
 
 /**
  ********************************* 表格操作 ******************************************
@@ -66,9 +65,12 @@ const onSearch = () => {
  * @desc 下载二维码
  */
 const handleDownloadCode = () => {
-  const base64Arr: string[] = []
+  const base64Arr: any[] = []
   selectedRows.value.forEach((item: any) => {
-    base64Arr.push(createQRCode(item.infoCode, item.codeColor))
+    base64Arr.push({
+      name: item.name,
+      file: createQRCode(item.infoCode, item.codeColor),
+    })
   })
   downloadQRCode(base64Arr)
 }

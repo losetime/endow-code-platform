@@ -196,23 +196,22 @@ export const createQRCode = (text: string, color: string): string => {
   }
   QRCode.toDataURL(text, opts, function (err: any, url: string) {
     if (err) throw err
-    console.log(url)
     imgUrl = url
   })
   return imgUrl
 }
 
 /**
- * @desc 下载二维码
+ * @desc 打包下载二维码
  */
-export const downloadQRCode = (imgArr: string[]) => {
+export const downloadQRCode = (fileList: { name: string; file: string }[]) => {
   const zip = new JSZip()
   const img: any = zip.folder('images')
-  imgArr.forEach((item: string) => {
-    img.file('smile.gif', item, { base64: true })
+  fileList.forEach((item: any) => {
+    img.file(`${item.name}.png`, item.file.replace(/^data:image\/(png|jpg|jpeg);base64,/, ''), { base64: true })
   })
   zip.generateAsync({ type: 'blob' }).then(function (content) {
-    // see FileSaver.js
-    saveAs(content, 'example.zip')
+    console.log('content--', content)
+    saveAs(content, 'download.zip')
   })
 }

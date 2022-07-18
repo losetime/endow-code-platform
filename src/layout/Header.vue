@@ -1,7 +1,7 @@
 <template>
   <div class="header-wrapper">
     <div class="header-left-wrap">
-      <div class="logo-wrap">
+      <div class="logo-wrap" @click="jumpHome">
         <img src="../assets/images/common/logo.png" alt="logo" />
         <span>赋码平台</span>
       </div>
@@ -21,12 +21,15 @@
         />
         <Iconfont type="icon-quanping" class="full-screen-icon" @click="toggleFullscreen" v-else />
       </div>
-      <a-dropdown placement="bottomRight" :trigger="['click']">
-        <a-avatar class="avatar-wrap">
-          <template #icon>
-            <Iconfont type="icon-nan_7" />
-          </template>
-        </a-avatar>
+      <a-dropdown placement="bottomRight" :trigger="['hover']">
+        <div class="user-info">
+          <a-avatar class="avatar-wrap">
+            <template #icon>
+              <Iconfont type="icon-nan_7" />
+            </template>
+          </a-avatar>
+          <span>{{ userName }}</span>
+        </div>
         <template #overlay>
           <a-menu>
             <a-menu-item key="0" @click="handleSetting">系统设置</a-menu-item>
@@ -51,13 +54,24 @@ import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
 const route = useRoute()
 const router = useRouter()
 
+const isFullscreen = ref(false)
+
 // 所有导航菜单
 const headerMenu = computed<Array<any>>(() => router.getRoutes().filter((val) => val.meta.level === 1))
 
 // 匹配当前一级导航
 const currentNavKey = computed(() => [route.matched[0].name])
 
-const isFullscreen = ref(false)
+const userName = computed(() => store.state.userInfo.userName)
+
+/**
+ * @desc 跳转首页
+ */
+const jumpHome = () => {
+  router.replace({
+    name: 'Home',
+  })
+}
 
 /**
  * @desc 选择菜单
@@ -121,6 +135,7 @@ const onLogout = () => {
       justify-content: center;
       align-items: center;
       background-color: rgba(0, 21, 41, 1);
+      cursor: pointer;
       img {
         width: 35px;
         height: 35px;
@@ -160,14 +175,17 @@ const onLogout = () => {
       .full-screen-icon,
       .quit-full-screen-icon {
         font-size: 25px;
-        color: #ffffff;
+        color: #000000;
         cursor: pointer;
       }
     }
-    .avatar-wrap {
+    .user-info {
       margin: 0 20px;
       cursor: pointer;
-      font-size: 22px;
+      .avatar-wrap {
+        font-size: 22px;
+        margin-right: 8px;
+      }
     }
   }
 }

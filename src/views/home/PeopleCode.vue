@@ -40,6 +40,7 @@ import PeopleCodeDetail from '@/components/home/PeopleCodeDetail.vue'
 import { apiGetPeopleCodeList } from '@/service/api/home'
 import { PeopleCodeColumns } from '@/columns/home'
 import { formatQRcodeText, formatQRcodeColor } from '@/enums/homeEnum'
+import { createQRCode, downloadQRCode } from '@/utils/base'
 
 /**
  ********************************* 表格操作 ******************************************
@@ -52,7 +53,7 @@ const tableInstance = ref()
 const searchParams = reactive({ name: '', mobile: '', identity: '' })
 
 // 选择表格
-const selectedRowKeys = computed(() => (tableInstance.value ? tableInstance.value.selectedRowKeys : []))
+const selectedRows = computed(() => (tableInstance.value ? tableInstance.value.selectedRows : []))
 
 /**
  * @desc 列表搜索
@@ -65,7 +66,14 @@ const onSearch = () => {
  * @desc 下载二维码
  */
 const handleDownloadCode = () => {
-  console.log(selectedRowKeys)
+  const base64Arr: any[] = []
+  selectedRows.value.forEach((item: any) => {
+    base64Arr.push({
+      name: item.name,
+      file: createQRCode(item.infoCode, item.codeColor),
+    })
+  })
+  downloadQRCode(base64Arr)
 }
 
 /**

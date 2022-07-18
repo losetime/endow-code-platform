@@ -108,7 +108,7 @@ const getDepartmentList = async () => {
   if (code === 20000) {
     treeList.value = data
     deptId.value = data[0].id
-    tableInstance.value.getSourceData()
+    tableInstance.value.handleReacquire()
   }
 }
 
@@ -168,7 +168,7 @@ const handleDel = (userId: number) => {
     const { code } = await apiDeleteUser({ userId })
     if (code === 20000) {
       message.success('删除成功')
-      tableInstance.value.getSourceData()
+      tableInstance.value.handleReacquire()
     }
   })
 }
@@ -180,7 +180,7 @@ const changeUserStatus = async (checked: string, record: any) => {
   const { userId } = record
   const { code } = await apiModifyUserStatus({ status: checked, userId })
   if (code === 20000) {
-    tableInstance.value.getSourceData()
+    tableInstance.value.handleReacquire()
     message.success(checked === '0' ? '已启用' : '已停用')
   }
 }

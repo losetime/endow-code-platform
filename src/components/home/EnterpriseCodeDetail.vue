@@ -23,7 +23,7 @@
       </div>
       <div class="handle-wrap">
         <a-button type="primary" @click="handleDownload">下载</a-button>
-        <a-button type="primary" @click="handlePrint">打印</a-button>
+        <a-button type="primary" @click="handlePrint" disabled>打印</a-button>
       </div>
     </div>
   </a-modal>
@@ -34,6 +34,7 @@ import { ref } from 'vue'
 // import { message } from 'ant-design-vue'
 import { getEnterpriseNature, getEnterpriseType, formatQRcodeText, formatQRcodeColor } from '@/enums/homeEnum'
 import { createQRCode } from '@/utils/base'
+import { saveAs } from 'file-saver'
 
 const visible = ref<boolean>(false)
 
@@ -57,7 +58,9 @@ const initModal = (initInfo: any) => {
 /**
  * @desc 下载
  */
-const handleDownload = async () => {}
+const handleDownload = async () => {
+  saveAs(imgUrl.value, `${detailInfo.value.name}.png`)
+}
 
 /**
  * @desc 打印

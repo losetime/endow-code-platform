@@ -43,6 +43,7 @@ import ProjectCodeSignIn from '@/components/home/ProjectCodeSignIn.vue'
 import { apiGetProjectCodeList } from '@/service/api/home'
 import { ProjectCodeColumns } from '@/columns/home'
 import { formatQRcodeText, formatQRcodeColor } from '@/enums/homeEnum'
+import { createQRCode, downloadQRCode } from '@/utils/base'
 
 /**
  ********************************* 表格操作 ******************************************
@@ -62,20 +63,34 @@ const onSearch = () => {
 }
 
 // 选择表格
-const selectedRowKeys = computed(() => (tableInstance.value ? tableInstance.value.selectedRowKeys : []))
+const selectedRows = computed(() => (tableInstance.value ? tableInstance.value.selectedRows : []))
 
 /**
  * @desc 下载信息二维码
  */
 const handleDownloadInfoCode = () => {
-  console.log(selectedRowKeys)
+  const base64Arr: any[] = []
+  selectedRows.value.forEach((item: any) => {
+    base64Arr.push({
+      name: `${item.name}(信息码)`,
+      file: createQRCode(item.infoCode, item.codeColor),
+    })
+  })
+  downloadQRCode(base64Arr)
 }
 
 /**
  * @desc 下载签到码
  */
 const handleDownloadSignInCode = () => {
-  console.log(selectedRowKeys)
+  const base64Arr: any[] = []
+  selectedRows.value.forEach((item: any) => {
+    base64Arr.push({
+      name: `${item.name}(签到码)`,
+      file: createQRCode(item.signCode, '#ffffff'),
+    })
+  })
+  downloadQRCode(base64Arr)
 }
 
 /**
