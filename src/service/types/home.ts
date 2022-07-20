@@ -22,7 +22,7 @@ export interface IGetPeopleCodeList extends IPaging {
  */
 export interface IGetProjectCodeList extends IPaging {
   name?: string
-  projectCode?: string
+  singleProjectCode?: string
 }
 
 /**

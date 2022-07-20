@@ -9,7 +9,7 @@
   >
     <div class="detail-wrapper">
       <div class="title-wrap">工程签到码</div>
-      <div class="info-wrap">{{ detailInfo?.name }}</div>
+      <div class="info-wrap">{{ detailInfo?.singleProjectName }} - {{ detailInfo?.bidName }}</div>
       <div class="code-wrap">
         <img :src="imgUrl" alt="二维码" />
       </div>
@@ -42,7 +42,7 @@ const imgUrl = ref('')
  */
 const initModal = (initInfo: any) => {
   detailInfo.value = initInfo
-  imgUrl.value = createQRCode(initInfo.signCode, '#000000')
+  imgUrl.value = createQRCode(initInfo.bidSignCode, '#000000')
   visible.value = true
 }
 
@@ -50,7 +50,7 @@ const initModal = (initInfo: any) => {
  * @desc 下载
  */
 const handleDownload = async () => {
-  saveAs(imgUrl.value, `${detailInfo.value.name}(签到码).png`)
+  saveAs(imgUrl.value, `${detailInfo.value.singleProjectName}-${detailInfo.value.bidName}(签到码).png`)
 }
 
 /**

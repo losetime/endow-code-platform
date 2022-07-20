@@ -14,6 +14,7 @@ enum Api {
   getEnterpriseCodeList = '/ecode_grant/codeCompany/selectPage',
   getPeopleCodeList = '/ecode_grant/codeEmployee/selectPage',
   getProjectCodeList = '/ecode_grant/codeProject/selectPage',
+  getBidSectionList = '/ecode_grant/codeProject/getBidList',
   getTranscodeList = '/ecode_grant/codeChange/selectPage',
   deleteTranscode = '/ecode_grant/codeChange/delete',
   getTargetCodeInfo = '/ecode_grant/codeChange/getObjectInfo',
@@ -72,6 +73,17 @@ export function apiGetPeopleCodeList(params: IGetPeopleCodeList) {
 export function apiGetProjectCodeList(params: IGetProjectCodeList) {
   return $http.request({
     url: Api.getProjectCodeList,
+    method: 'GET',
+    params,
+  })
+}
+
+/**
+ * @desc 获取标段列表
+ */
+export function apiGetBidSectionList(params: { singleProjectCode: string }) {
+  return $http.request({
+    url: Api.getBidSectionList,
     method: 'GET',
     params,
   })

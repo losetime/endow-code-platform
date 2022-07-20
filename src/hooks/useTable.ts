@@ -28,12 +28,17 @@ const useTable = (getTableData: Function, tableParams?: Object, isImmediately?: 
     getTableData(params).then((res: any) => {
       tableData.loading = false
       if (res.code === 20000) {
-        if (res.data.records.length <= 0 && reqParams.current > 1) {
-          reqParams.current -= 1
-          getSourceData()
+        if (Array.isArray(res.data)) {
+          tableData.result = res.data
+          tableData.total = res.data.length
         } else {
-          tableData.result = res.data.records
-          tableData.total = res.data.total
+          if (res.data.records.length <= 0 && reqParams.current > 1) {
+            reqParams.current -= 1
+            getSourceData()
+          } else {
+            tableData.result = res.data.records
+            tableData.total = res.data.total
+          }
         }
       }
     })

@@ -3,7 +3,7 @@
     <div class="handle-wrap">
       <a-space>
         <a-input v-model:value="searchParams.name" placeholder="请输入工程名称" allowClear />
-        <a-input v-model:value="searchParams.projectCode" placeholder="请输入工程编码" allowClear />
+        <a-input v-model:value="searchParams.singleProjectCode" placeholder="请输入工程编码" allowClear />
         <a-button type="primary" @click="onSearch">查询</a-button>
       </a-space>
     </div>
@@ -44,6 +44,7 @@ import { apiGetProjectCodeList } from '@/service/api/home'
 import { ProjectCodeColumns } from '@/columns/home'
 import { formatQRcodeText, formatQRcodeColor } from '@/enums/homeEnum'
 import { createQRCode, downloadQRCode } from '@/utils/base'
+import { useRouter } from 'vue-router'
 
 /**
  ********************************* 表格操作 ******************************************
@@ -53,7 +54,7 @@ import { createQRCode, downloadQRCode } from '@/utils/base'
 const tableInstance = ref()
 
 // 搜索参数
-const searchParams = reactive({ name: '', projectCode: '' })
+const searchParams = reactive({ name: '', singleProjectCode: '' })
 
 /**
  * @desc 列表搜索
@@ -107,12 +108,18 @@ const checkProjectInfoCode = (record: any) => {
 }
 
 const signInInstance = ref()
+const router = useRouter()
 
 /**
  * @desc 查看工程签到码
  */
 const checkProjectSignInCode = (record: any) => {
-  signInInstance.value.initModal(record)
+  router.push({
+    name: 'SignInCode',
+    query: {
+      code: record.singleProjectCode,
+    },
+  })
 }
 </script>
 

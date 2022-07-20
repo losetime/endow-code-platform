@@ -112,6 +112,33 @@ export const ProjectCodeColumns = [
 ]
 
 /**
+ * @desc 签到码
+ */
+export const SignInCodeColumns = [
+  {
+    title: '标段名称',
+    dataIndex: 'bidName',
+    key: 'bidName',
+  },
+  {
+    title: '标段编码',
+    key: 'bidNo',
+    dataIndex: 'bidNo',
+  },
+  {
+    title: '工程编码',
+    key: 'singleProjectCode',
+    dataIndex: 'singleProjectCode',
+  },
+  {
+    title: '操作',
+    key: 'action',
+    align: 'center',
+    width: 200,
+  },
+]
+
+/**
  * @desc 码转色
  */
 export const CodeConvertColumns = [
