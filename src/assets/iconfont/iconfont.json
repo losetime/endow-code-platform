@@ -6,11 +6,11 @@
   "description": "",
   "glyphs": [
     {
-      "icon_id": "19013389",
-      "name": "申诉-appeal",
-      "font_class": "shensu-appeal",
-      "unicode": "e650",
-      "unicode_decimal": 58960
+      "icon_id": "949819",
+      "name": "VR-互动",
+      "font_class": "vr-m",
+      "unicode": "e616",
+      "unicode_decimal": 58902
     },
     {
       "icon_id": "10268613",
@@ -20,25 +20,11 @@
       "unicode_decimal": 59013
     },
     {
-      "icon_id": "23994384",
-      "name": "申诉服务",
-      "font_class": "shensufuwu",
-      "unicode": "e605",
-      "unicode_decimal": 58885
-    },
-    {
       "icon_id": "30654751",
       "name": "gongcheng11",
       "font_class": "gongcheng11",
       "unicode": "e640",
       "unicode_decimal": 58944
-    },
-    {
-      "icon_id": "30654803",
-      "name": "shensuguanli-copy",
-      "font_class": "shensuguanli-copy",
-      "unicode": "e716",
-      "unicode_decimal": 59158
     },
     {
       "icon_id": "1727563",

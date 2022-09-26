@@ -8,6 +8,7 @@ import {
   IGetTargetCodeInfo,
   ISaveTranscodeInfo,
   IGetAppealManageList,
+  IGetVRCodeList,
 } from '../types/home'
 
 enum Api {
@@ -86,6 +87,86 @@ export function apiGetBidSectionList(params: { singleProjectCode: string }) {
     url: Api.getBidSectionList,
     method: 'GET',
     params,
+  })
+}
+
+// -------------------------------------- VR设备码 -----------------------------------------------
+
+/**
+ * @desc: 获取VR设备码列表
+ */
+export function apiGetVRCodeList(params: IGetVRCodeList) {
+  return $http.request({
+    url: '/ecode_grant/codeVR/selectPage',
+    method: 'GET',
+    params,
+  })
+}
+
+/**
+ * @desc: 获取工程列表
+ */
+export function apiGetProjectList() {
+  return $http.request({
+    url: '/ecode_grant/codeVR/getAllProjectInfo',
+    method: 'GET',
+  })
+}
+
+/**
+ * @desc: 获取单项工程列表
+ */
+export function apiGetSingleProjectList(params: { projectCode: string }) {
+  return $http.request({
+    url: '/ecode_grant/codeVR/getSingleListFromProjectCode',
+    method: 'GET',
+    params,
+  })
+}
+
+/**
+ * @desc 新增设备
+ */
+export function apiAddVRInfo(params: {
+  id?: string
+  vrSn: string
+  bidNo: string
+  bidDesc: string
+  projectCode: string
+  singleProjectCode: string
+}) {
+  return $http.request({
+    url: '/ecode_grant/codeVR/save',
+    method: 'POST',
+    params,
+  })
+}
+
+/**
+ * @desc 新增设备
+ */
+export function apiUpdateVRInfo(params: {
+  id?: string
+  vrSn: string
+  bidNo: string
+  bidDesc: string
+  projectCode: string
+  singleProjectCode: string
+}) {
+  return $http.request({
+    url: '/ecode_grant/codeVR/update',
+    method: 'PUT',
+    params,
+  })
+}
+
+/**
+ * @desc 删除VR设备
+ */
+export function apiDeleteVRInfo(params: { id: string }) {
+  return $http.request({
+    url: '/ecode_grant/codeVR/delete?id=' + params.id,
+    method: 'DELETE',
   })
 }
 

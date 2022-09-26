@@ -26,6 +26,13 @@ export interface IGetProjectCodeList extends IPaging {
 }
 
 /**
+ * @desc VR设备码
+ */
+export interface IGetVRCodeList extends IPaging {
+  vrSn?: string // VR设备编码
+}
+
+/**
  * @desc 获取转码信息列表
  */
 export interface IGetTranscodeList extends IPaging {

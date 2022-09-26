@@ -181,7 +181,7 @@ export const isVisibleRoute = (route: any) => {
 /**
  * @desc 生成二维码
  */
-export const createQRCode = (text: string, color: string): string => {
+export const createQRCode = (text: string, color?: string): string => {
   let imgUrl = ''
   const opts: any = {
     errorCorrectionLevel: 'H',
@@ -189,7 +189,7 @@ export const createQRCode = (text: string, color: string): string => {
     quality: 0.3,
     margin: 1,
     color: {
-      dark: formatQRcodeColor(color),
+      dark: color ? formatQRcodeColor(color) : '#000000',
       light: '#FFFFFF',
     },
     width: 300,

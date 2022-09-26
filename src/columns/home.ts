@@ -112,6 +112,33 @@ export const ProjectCodeColumns = [
 ]
 
 /**
+ * @desc vr设备码
+ */
+export const VRCodeColumns = [
+  {
+    title: '设备编码',
+    dataIndex: 'vrSn',
+    key: 'vrSn',
+  },
+  {
+    title: '关联工程',
+    key: 'bidDesc',
+    dataIndex: 'bidDesc',
+  },
+  {
+    title: '创建时间',
+    key: 'createTime',
+    dataIndex: 'createTime',
+  },
+  {
+    title: '操作',
+    key: 'action',
+    align: 'center',
+    width: 200,
+  },
+]
+
+/**
  * @desc 签到码
  */
 export const SignInCodeColumns = [
