@@ -12,13 +12,8 @@
       <a-button type="primary" @click="handleDownloadCode">下载二维码</a-button>
     </a-space>
     <div class="table-wrap">
-      <ym-table
-        rowKey="id"
-        :columns="PeopleCodeColumns"
-        :getTableList="apiGetPeopleCodeList"
-        :params="searchParams"
-        ref="tableInstance"
-      >
+      <ym-table rowKey="id" :columns="PeopleCodeColumns" :getTableList="apiGetPeopleCodeList" :params="searchParams"
+        ref="tableInstance">
         <template #slotOne="{ record }">
           <span :style="{ color: formatQRcodeColor(record.codeColor) }">{{ formatQRcodeText(record.codeColor) }}</span>
         </template>
@@ -93,16 +88,19 @@ const checkQRCode = (record: any) => {
 <style lang="less" scoped>
 .people-code-wrapper {
   height: 100%;
+
   .handle-wrap {
     display: flex;
     justify-content: space-between;
   }
+
   .download-wrap {
     width: 100%;
     background-color: #ffffff;
     margin-top: 14px;
     padding: 14px 0 0 14px;
   }
+
   .table-wrap {
     margin-top: 0 !important;
     height: calc(100% - 120px) !important;

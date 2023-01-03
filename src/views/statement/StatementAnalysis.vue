@@ -99,11 +99,10 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import type { Dayjs } from 'dayjs'
 import YmTable from '@/components/common/YmTable.vue'
-import { apiGetUserInfo, apiGetInfoByDateArea } from '@/service/api/statementAnalysis'
-import { message } from 'ant-design-vue'
-import moment, { Moment } from 'moment'
+import { apiGetUserInfo } from '@/service/api/statementAnalysis'
+// import { message } from 'ant-design-vue'
+import { Moment } from 'moment'
 const tabPosition = ref('left')
 const activeKey = ref('1')
 const tableTaggingInstance = ref()
@@ -121,20 +120,20 @@ function rowClick(record: any, index: any) {
   }
 }
 
-/**
- * @desc 列表搜索
- */
-const handleReacquire = (page?: number) => {
-  tableInstance.value.handleReacquire(page)
-}
+// /**
+//  * @desc 列表搜索
+//  */
+// const handleReacquire = (page?: number) => {
+//   tableInstance.value.handleReacquire(page)
+// }
 
-const onDateChange = async (dateArea: RangeValue) => {
-  const { code } = await apiGetInfoByDateArea({ startDate: dateArea[0]?.toString, endDate: dateArea[1]?.toString })
-  if (code === 20000) {
-    message.success('删除成功')
-    handleReacquire()
-  }
-}
+// const onDateChange = async (dateArea: RangeValue) => {
+//   const { code } = await apiGetInfoByDateArea({ startDate: dateArea[0]?.toString, endDate: dateArea[1]?.toString })
+//   if (code === 20000) {
+//     message.success('删除成功')
+//     handleReacquire()
+//   }
+// }
 
 const onChange = (date: any, dateString: any) => {
   console.log('date', dateString)
@@ -231,93 +230,80 @@ const columns = [
     ],
   },
 ]
-const data = [...Array(100)].map((_, i) => ({
-  key: i,
-  constructionUnit: '国网陕西公司',
-  projectGreen: i + 1,
-  projectOrange: i + 1,
-  projectRed: i + 1,
-  enterpriseGreen: i + 1,
-  enterpriseOrange: i + 1,
-  enterpriseRed: i + 1,
-  personGreen: i + 1,
-  personOrange: i + 1,
-  personRed: i + 1,
-}))
 
-const columnProject = [
-  {
-    title: '工程名称',
-    dataIndex: 'projectName',
-    key: 'projectName',
-    width: 100,
-    fixed: 'left',
-    align: 'center',
-    customCell: rowClick,
-    ellipsis: true,
-  },
-  {
-    title: '码类型',
-    dataIndex: 'codeType',
-    key: 'codeType',
-    width: 100,
-    fixed: 'left',
-    align: 'center',
-    ellipsis: true,
-  },
-  {
-    title: '施工企业码',
-    children: [
-      {
-        title: '绿码',
-        dataIndex: 'buildCompanyGreen',
-        key: 'buildCompanyGreen',
-        align: 'center',
-        width: 50,
-      },
-      {
-        title: '黄码',
-        dataIndex: 'buildCompanyOrange',
-        key: 'buildCompanyOrange',
-        align: 'center',
-        width: 50,
-      },
-      {
-        title: '红码',
-        dataIndex: 'buildCompanyRed',
-        key: 'buildCompanyRed',
-        align: 'center',
-        width: 50,
-      },
-    ],
-  },
-  {
-    title: '施工人员码',
-    children: [
-      {
-        title: '绿码',
-        dataIndex: 'buildPersonGreen',
-        key: 'buildPersonGreen',
-        align: 'center',
-        width: 50,
-      },
-      {
-        title: '黄码',
-        dataIndex: 'buildPersonOrange',
-        key: 'buildPersonOrange',
-        align: 'center',
-        width: 50,
-      },
-      {
-        title: '红码',
-        dataIndex: 'buildPersonRed',
-        key: 'buildPersonRed',
-        align: 'center',
-        width: 50,
-      },
-    ],
-  },
-]
+// const columnProject = [
+//   {
+//     title: '工程名称',
+//     dataIndex: 'projectName',
+//     key: 'projectName',
+//     width: 100,
+//     fixed: 'left',
+//     align: 'center',
+//     customCell: rowClick,
+//     ellipsis: true,
+//   },
+//   {
+//     title: '码类型',
+//     dataIndex: 'codeType',
+//     key: 'codeType',
+//     width: 100,
+//     fixed: 'left',
+//     align: 'center',
+//     ellipsis: true,
+//   },
+//   {
+//     title: '施工企业码',
+//     children: [
+//       {
+//         title: '绿码',
+//         dataIndex: 'buildCompanyGreen',
+//         key: 'buildCompanyGreen',
+//         align: 'center',
+//         width: 50,
+//       },
+//       {
+//         title: '黄码',
+//         dataIndex: 'buildCompanyOrange',
+//         key: 'buildCompanyOrange',
+//         align: 'center',
+//         width: 50,
+//       },
+//       {
+//         title: '红码',
+//         dataIndex: 'buildCompanyRed',
+//         key: 'buildCompanyRed',
+//         align: 'center',
+//         width: 50,
+//       },
+//     ],
+//   },
+//   {
+//     title: '施工人员码',
+//     children: [
+//       {
+//         title: '绿码',
+//         dataIndex: 'buildPersonGreen',
+//         key: 'buildPersonGreen',
+//         align: 'center',
+//         width: 50,
+//       },
+//       {
+//         title: '黄码',
+//         dataIndex: 'buildPersonOrange',
+//         key: 'buildPersonOrange',
+//         align: 'center',
+//         width: 50,
+//       },
+//       {
+//         title: '红码',
+//         dataIndex: 'buildPersonRed',
+//         key: 'buildPersonRed',
+//         align: 'center',
+//         width: 50,
+//       },
+//     ],
+//   },
+// ]
 
 const columnLog = [
   {
@@ -355,14 +341,6 @@ const columnLog = [
     ellipsis: true,
   },
 ]
-
-const logData = [...Array(100)].map((_, i) => ({
-  key: i,
-  supervisoryUnit: '国网陕西公司',
-  jobPlanCount: i + 1,
-  logReportedCount: i + 1,
-  supervisorReportedCount: i + 1,
-}))
 
 const columnSupervision = [
   {
@@ -448,11 +426,6 @@ const columnSupervision = [
     ellipsis: true,
   },
 ]
-
-const SupervisionData = [...Array(100)].map((_, i) => ({
-  key: i,
-  supervisoryUnit: '国网陕西公司',
-}))
 
 const columnRisk = [
   {
