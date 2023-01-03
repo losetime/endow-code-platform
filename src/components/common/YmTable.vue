@@ -8,6 +8,7 @@
       :loading="tableData.loading"
       :scroll="{ y: ymHeight }"
       :pagination="pagination"
+      bordered
       size="small"
     >
       <template #bodyCell="{ column, record, index }">
@@ -148,6 +149,7 @@ defineExpose({
 <style lang="less" scoped>
 .ym-table-wrapper {
   position: absolute;
+
   ::v-deep(.ant-table-body) {
     overflow-y: auto !important;
   }
