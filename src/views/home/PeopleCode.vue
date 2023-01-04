@@ -39,7 +39,7 @@ import YmTable from '@/components/common/YmTable.vue'
 import PeopleCodeDetail from '@/components/home/PeopleCodeDetail.vue'
 import { apiGetPeopleCodeList } from '@/service/api/home'
 import { PeopleCodeColumns } from '@/columns/home'
-import { formatQRcodeText, formatQRcodeColor } from '@/enums/homeEnum'
+// import { formatQRcodeText, formatQRcodeColor } from '@/enums/homeEnum'
 import { createQRCode, downloadQRCode } from '@/utils/base'
 
 /**
@@ -85,9 +85,9 @@ const detailInstance = ref()
 /**
  * @desc 查看二维码
  */
-const checkQRCode = (record: any) => {
-  detailInstance.value.initModal(record)
-}
+// const checkQRCode = (record: any) => {
+//   detailInstance.value.initModal(record)
+// }
 </script>
 
 <style lang="less" scoped>
