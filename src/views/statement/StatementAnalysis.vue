@@ -27,10 +27,6 @@
             <a-button class="btn-date" type="primary">本周</a-button>
             <a-button class="btn-date" type="primary">本月</a-button>
             <a-range-picker class="btn-date" v-model:value="dateArea" @change="onChange" />
-            <!-- <a-table :columns="columnLog" :data-source="logData" bordered size="middle"
-              :scroll="{ x: 'calc(700px + 50%)', y: 240 }"> -->
-            <!-- :getTableList="apiGetProjectCodeList" -->
-
             <ym-table
               rowKey="id"
               :columns="columnLog"
@@ -103,6 +99,7 @@ import YmTable from '@/components/common/YmTable.vue'
 import { apiGetUserInfo } from '@/service/api/statementAnalysis'
 // import { message } from 'ant-design-vue'
 import { Moment } from 'moment'
+
 const tabPosition = ref('left')
 const activeKey = ref('1')
 const tableTaggingInstance = ref()

@@ -12,16 +12,21 @@
       <a-button type="primary" @click="handleDownloadCode">下载二维码</a-button>
     </a-space>
     <div class="table-wrap">
-      <ym-table rowKey="id" :columns="PeopleCodeColumns" :getTableList="apiGetPeopleCodeList" :params="searchParams"
-        ref="tableInstance">
-        <template #slotOne="{ record }">
+      <ym-table
+        rowKey="id"
+        :columns="PeopleCodeColumns"
+        :getTableList="apiGetPeopleCodeList"
+        :params="searchParams"
+        ref="tableInstance"
+      >
+        <!-- <template #slotOne="{ record }">
           <span :style="{ color: formatQRcodeColor(record.codeColor) }">{{ formatQRcodeText(record.codeColor) }}</span>
         </template>
         <template #action="{ record }">
           <a-space>
             <a-button type="link" size="small" @click="checkQRCode(record)">查看二维码</a-button>
           </a-space>
-        </template>
+        </template> -->
       </ym-table>
     </div>
     <people-code-detail ref="detailInstance" />

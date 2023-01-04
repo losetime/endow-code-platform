@@ -112,6 +112,65 @@ export const ProjectCodeColumns = [
 ]
 
 /**
+ * @desc 安全监督卡表头
+ */
+export const saftyCardColumns = [
+  {
+    title: '监督卡类型',
+    dataIndex: 'type',
+    key: 'type',
+  },
+  {
+    title: '代码',
+    key: 'code',
+    dataIndex: 'code',
+  },
+  {
+    title: '安全监督卡类型',
+    key: 'saftyType',
+    dataIndex: 'saftyType',
+  },
+  {
+    title: '发布状态',
+    key: 'publishStatu',
+    dataIndex: 'publishStatu',
+  },
+  {
+    title: '卡内容配置',
+    key: 'cardConfig',
+    dataIndex: 'cardConfig',
+  },
+  {
+    title: '操作',
+    key: 'action',
+    align: 'center',
+    width: 200,
+  },
+]
+
+/**
+ * @desc 安全监督卡配置表头
+ */
+export const saftyCardConfigColumns = [
+  {
+    title: '内容',
+    dataIndex: 'content',
+    key: 'content',
+  },
+  {
+    title: '排序',
+    key: 'sort',
+    dataIndex: 'sort',
+  },
+  {
+    title: '操作',
+    key: 'action',
+    align: 'center',
+    width: 200,
+  },
+]
+
+/**
  * @desc vr设备码
  */
 export const VRCodeColumns = [

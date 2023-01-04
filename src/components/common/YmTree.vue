@@ -13,7 +13,7 @@
       @select="onSelected"
       @right-click="onRightClick"
       @check="onChecked"
-      showLine
+      :showLine="showLine"
       block-node
     >
       <template #title="record" v-if="customTitle">
@@ -48,6 +48,7 @@ interface Props {
   showSearch?: boolean // 是否显示搜索
   checkable?: boolean
   defaultChecked?: number[]
+  showLine?: boolean
 }
 
 // note: 非基本类型要使用函数返回
@@ -62,6 +63,7 @@ const props = withDefaults(defineProps<Props>(), {
   showSearch: true,
   checkable: false,
   defaultChecked: () => [],
+  showLine: true,
 })
 
 const emit = defineEmits<{

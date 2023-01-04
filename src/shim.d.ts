@@ -8,3 +8,4 @@ declare module '*.vue' {
 }
 
 declare module 'lodash-es'
+declare module '@/components/saftyCardView/CreateMenu.vue'

@@ -48,3 +48,20 @@ export const deptDetailRules = reactive({
   deptName: [{ required: true, message: '部门名称不能为空', trigger: 'change' }],
   orderNum: [{ required: true, type: 'number', message: '排序不能为空', trigger: 'change' }],
 })
+
+export const saftyCardConfigAddRules = reactive({
+  name: [{ required: true, message: '分类名称不能为空', trigger: 'change' }],
+  categoryParent: [{ required: true, type: 'number', message: '上级菜单不能为空', trigger: 'change' }],
+  sort: [{ required: true, message: '分类排序不能为空', trigger: 'change' }],
+})
+
+export const saftyCardProjectAddRules = reactive({
+  content: [{ required: true, message: '内容不能为空', trigger: 'change' }],
+  sort: [{ required: true, message: '排序不能为空', trigger: 'change' }],
+})
+
+export const saftyCardAddRules = reactive({
+  cardName: [{ required: true, message: '监督卡名称不能为空', trigger: 'change' }],
+  code: [{ required: true, message: '代码不能为空', trigger: 'change' }],
+  cardType: [{ required: true, message: '监督卡类型不能为空', trigger: 'change' }],
+})
