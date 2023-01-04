@@ -40,7 +40,6 @@ import CreateMenu from '@/components/saftyCardView/CreateMenu.vue'
 import CreateProject from '@/components/saftyCardView/CreateProject.vue'
 //import { apiGetSaftyCardConfig } from '@/service/api/saftyCard'
 import { apiGetSaftyCardConfigProject } from '@/service/api/saftyCard'
-import { SelectEvent } from 'ant-design-vue/es/tree/Tree'
 
 const menuTreeOptions = ref<any[]>([
   {
