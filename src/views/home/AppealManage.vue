@@ -128,18 +128,22 @@ const handleEndowCode = (record: any) => {
 <style lang="less" scoped>
 .complaint-manage-wrapper {
   height: 100%;
+
   .handle-wrap {
     display: flex;
     justify-content: space-between;
   }
+
   .tabs-wrap {
     margin-top: 14px;
     padding: 14px;
     background-color: #ffffff;
+
     ::v-deep(.ant-tabs) {
       .ant-tabs-nav {
         margin-bottom: 0;
       }
+
       .ant-tabs-content-holder {
         .ant-tabs-content {
           .ant-tabs-tabpane {
