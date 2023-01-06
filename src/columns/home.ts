@@ -116,9 +116,9 @@ export const ProjectCodeColumns = [
  */
 export const saftyCardColumns = [
   {
-    title: '监督卡类型',
-    dataIndex: 'type',
-    key: 'type',
+    title: '监督卡名称',
+    dataIndex: 'name',
+    key: 'name',
   },
   {
     title: '代码',
@@ -127,23 +127,23 @@ export const saftyCardColumns = [
   },
   {
     title: '安全监督卡类型',
-    key: 'saftyType',
-    dataIndex: 'saftyType',
+    key: 'type',
+    dataIndex: 'type',
   },
   {
     title: '发布状态',
-    key: 'publishStatu',
-    dataIndex: 'publishStatu',
+    key: 'status',
+    dataIndex: 'status',
   },
   {
     title: '卡内容配置',
-    key: 'cardConfig',
-    dataIndex: 'cardConfig',
+    key: 'slotOne',
+    align: 'center',
+    width: 200,
   },
   {
     title: '操作',
     key: 'action',
-    align: 'center',
     width: 200,
   },
 ]
@@ -161,6 +161,28 @@ export const saftyCardConfigColumns = [
     title: '排序',
     key: 'sort',
     dataIndex: 'sort',
+  },
+  {
+    title: '操作',
+    key: 'action',
+    align: 'center',
+    width: 200,
+  },
+]
+
+/**
+ * @desc 智码库列表表头
+ */
+export const thinkCodeLibraryColumns = [
+  {
+    title: '标题',
+    dataIndex: 'title',
+    key: 'title',
+  },
+  {
+    title: '创建时间',
+    key: 'createTime',
+    dataIndex: 'createTime',
   },
   {
     title: '操作',

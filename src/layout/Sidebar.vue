@@ -73,11 +73,54 @@ const handleSelectKeys = ({ selectedKeys }: { selectedKeys: Array<string> }) => 
 <style lang="less" scoped>
 .layout-sider-wrapper {
   height: calc(100vh - 64px);
-  overflow: auto;
+  overflow-y: auto;
+
   // background: rgba(3, 21, 56, 1);
   .anticon {
     font-size: 20px;
     // color: red;
+  }
+
+  /*滚动条样式*/
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 8px;
+    background-color: rgba(255, 254, 254, 0);
+    border-radius: 6px;
+  }
+
+  &::-webkit-scrollbar-track-piece {
+    background-color: rgba(255, 255, 255, 0.1);
+    -webkit-border-radius: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb:vertical {
+    height: 5px;
+    background-color: rgba(204, 204, 204, 0);
+    -webkit-border-radius: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb:horizontal {
+    width: 5px;
+    background-color: rgba(204, 204, 204, 0);
+    -webkit-border-radius: 6px;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: rgba(0, 0, 0, 0);
+  }
+
+  &::-webkit-scrollbar-track-piece {
+    background: #d3dce600;
+  }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #99a9bf00;
+    border-radius: 20px;
   }
 }
 </style>

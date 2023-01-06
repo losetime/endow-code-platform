@@ -138,7 +138,7 @@ const handleEndowCode = (record: any) => {
     background-color: #ffffff;
     ::v-deep(.ant-tabs) {
       .ant-tabs-nav {
-        // margin-bottom: 0;
+        margin-bottom: 0;
       }
       .ant-tabs-content-holder {
         .ant-tabs-content {

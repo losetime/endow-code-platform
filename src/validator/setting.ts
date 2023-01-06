@@ -55,6 +55,11 @@ export const saftyCardConfigAddRules = reactive({
   sort: [{ required: true, message: '分类排序不能为空', trigger: 'change' }],
 })
 
+export const thinkCodeLibraryCatalogAddRules = reactive({
+  name: [{ required: true, message: '目录名称不能为空', trigger: 'change' }],
+  categoryParent: [{ required: true, type: 'number', message: '上级目录不能为空', trigger: 'change' }],
+})
+
 export const saftyCardProjectAddRules = reactive({
   content: [{ required: true, message: '内容不能为空', trigger: 'change' }],
   sort: [{ required: true, message: '排序不能为空', trigger: 'change' }],
@@ -64,4 +69,8 @@ export const saftyCardAddRules = reactive({
   cardName: [{ required: true, message: '监督卡名称不能为空', trigger: 'change' }],
   code: [{ required: true, message: '代码不能为空', trigger: 'change' }],
   cardType: [{ required: true, message: '监督卡类型不能为空', trigger: 'change' }],
+})
+
+export const saftyCardReNameRules = reactive({
+  name: [{ required: true, message: '监督卡名称不能为空', trigger: 'change' }],
 })

@@ -97,3 +97,33 @@ export const formatQRcodeColor = (codeColor: string) => {
       return '#FF5434'
   }
 }
+
+/**
+ * @desc 安全监督卡类型
+ */
+export const safetySupervisionCardType = [
+  {
+    label: '输电',
+    value: '1',
+  },
+  {
+    label: '变电',
+    value: '2',
+  },
+  {
+    label: '配电',
+    value: '3',
+  },
+  {
+    label: '营销',
+    value: '4',
+  },
+  {
+    label: '基建线路',
+    value: '5',
+  },
+  {
+    label: '基建变电',
+    value: '6',
+  },
+]
