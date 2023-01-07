@@ -108,6 +108,7 @@ const { resetFields, validateInfos, validate } = useForm(detailInfo, saftyCardCo
 const handleCancel = () => {
   resetFields()
   visible.value = false
+  menuTreeOptions.value.length = 1
 }
 /**
  * @desc 确认

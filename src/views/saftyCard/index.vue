@@ -19,7 +19,7 @@
         </template>
         <template #action="{ record }">
           <a-space v-if="record?.status == '已发布'">
-            <a-button class="btn-item" type="link" size="small">重命名</a-button>
+            <a-button class="btn-item" type="link" size="small" @click="handleRename(record)">重命名</a-button>
             <a-popconfirm
               placement="topRight"
               title="确认撤销发布该安全监督卡吗?"
