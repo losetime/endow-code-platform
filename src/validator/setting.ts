@@ -62,7 +62,7 @@ export const thinkCodeLibraryCatalogAddRules = reactive({
 
 export const saftyCardProjectAddRules = reactive({
   content: [{ required: true, message: '内容不能为空', trigger: 'change' }],
-  sort: [{ required: true, message: '排序不能为空', trigger: 'change' }],
+  orderNum: [{ required: true, message: '排序不能为空', trigger: 'change' }],
 })
 
 export const saftyCardAddRules = reactive({

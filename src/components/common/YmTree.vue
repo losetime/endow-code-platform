@@ -13,6 +13,7 @@
       @select="onSelected"
       @right-click="onRightClick"
       @check="onChecked"
+      @drop="onDrop"
       :showLine="showLine"
       block-node
     >
@@ -71,6 +72,7 @@ const emit = defineEmits<{
   (e: 'select', keys: string[] | number[], event: any): void
   (e: 'rightClick', params: any): void
   (e: 'check', keys: number[], event: any): void
+  (e: 'drop', keys: number[], event: any): void
 }>()
 
 const searchValue = ref<string>('')
@@ -171,6 +173,10 @@ const onRightClick = ({ event, node }: any) => {
 
 const onChecked = (keys: number[], event: any) => {
   emit('check', keys, event)
+}
+
+const onDrop = (keys: number[], event: any) => {
+  emit('drop', keys, event)
 }
 
 defineExpose({

@@ -19,7 +19,7 @@
         </template>
         <template #action="{ record }">
           <a-space v-if="record?.status == '已发布'">
-            <a-button type="link" size="small">重命名</a-button>
+            <a-button class="btn-item" type="link" size="small">重命名</a-button>
             <a-popconfirm
               placement="topRight"
               title="确认撤销发布该安全监督卡吗?"
@@ -63,7 +63,7 @@
               cancel-text="取消"
               @confirm="confirm(record.id)"
             >
-              <a-button type="link" size="small">删除</a-button>
+              <a-button class="btn-item" type="link" size="small">删除</a-button>
             </a-popconfirm>
           </a-space>
         </template>
@@ -87,6 +87,7 @@ import {
 import CreateSaftyCard from '@/components/saftyCardView/CreateSaftyCard.vue'
 import ReNameCard from '@/components/saftyCardView/ReNameCard.vue'
 import { message } from 'ant-design-vue'
+import router from '@/router'
 
 // 表格实例
 const tableInstance = ref()
@@ -113,7 +114,10 @@ const handleAddCard = () => {
 }
 
 const handleConfig = (scope: any) => {
-  console.log(scope)
+  router.push({
+    path: '/home/safty-card-config',
+    query: { cardId: scope.id },
+  })
 }
 
 const handleRename = (scope: any) => {

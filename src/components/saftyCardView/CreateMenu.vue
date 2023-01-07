@@ -8,14 +8,13 @@
     width="450px"
   >
     <a-form :label-col="labelCol" labelAlign="left">
-      <a-form-item label="分类名称" v-bind="validateInfos.name">
-        <a-input v-model:value="detailInfo.name" placeholder="请输入分类名称" />
+      <a-form-item label="分类名称" v-bind="validateInfos.categoryName">
+        <a-input v-model:value="detailInfo.categoryName" placeholder="请输入分类名称" />
       </a-form-item>
-      <a-form-item label="上级分类" v-bind="validateInfos.categoryParent">
+      <a-form-item label="上级分类" v-bind="validateInfos.parentId">
         <a-tree-select
-          v-model:value="detailInfo.categoryParent"
-          show-search
-          :field-names="fieldNames"
+          v-model:value="detailInfo.parentId"
+          treeNodeLabelProp="title"
           style="width: 100%"
           :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
           placeholder="请选择上级菜单"
@@ -23,8 +22,8 @@
           :tree-data="menuTreeOptions"
         />
       </a-form-item>
-      <a-form-item label="分类排序" v-bind="validateInfos.sort">
-        <a-input v-model:value="detailInfo.sort" placeholder="请输入分类排序" />
+      <a-form-item label="分类排序" v-bind="validateInfos.orderNum">
+        <a-input v-model:value="detailInfo.orderNum" placeholder="请输入分类排序" />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -33,7 +32,7 @@
 <script lang="ts" setup>
 import { ref, reactive, toRaw } from 'vue'
 import { Form, message } from 'ant-design-vue'
-import { apiGetSaftyCardConfig, apiSubmitSaftyCardConfig } from '@/service/api/saftyCard'
+import { apiGetSaftyCardConfig, apiConfirmCreateSaftyCardConfig } from '@/service/api/saftyCard'
 import { saftyCardConfigAddRules } from '@/validator/setting'
 
 const props = defineProps<{
@@ -41,49 +40,65 @@ const props = defineProps<{
   getSourceData: Function
 }>()
 
-const fieldNames = ref({
-  title: 'label',
-  value: 'id',
+const detailInfo = reactive<any>({
+  categoryName: '',
+  orderNum: '',
+  safetyCardId: '',
+  parentId: '',
 })
 
 const labelCol = { span: 5 }
-const menuTreeOptions = ref<any[]>([])
+const menuTreeOptions = ref<any[]>([
+  {
+    title: '无上级分类',
+    value: '0',
+    key: '0',
+  },
+])
 
+// const fieldNames = ref({ children: 'children', key: 'parentId', value: 'id', title: 'name' })
 /**
  * @desc 初始化对话框
  */
-const initModal = async () => {
+const initModal = async (cardId: string) => {
   visible.value = true
-  await getMenuTreeOptions
+  detailInfo.safetyCardId = cardId
+  await getMenuTreeOptions(cardId)
 }
 
 /**
  * @desc 获取所有菜单树
  */
-const getMenuTreeOptions = async () => {
-  const { code, data } = await apiGetSaftyCardConfig()
+const getMenuTreeOptions = async (scope: any) => {
+  const { code, data } = await apiGetSaftyCardConfig(scope)
   if (code === 20000) {
-    menuTreeOptions.value = [
-      {
-        label: '主类目',
-        id: 0,
-        children: data,
-      },
-    ]
-    console.log(menuTreeOptions.value)
+    var res = convertToTreedata(data)
+    menuTreeOptions.value.push(...res)
   }
+}
+
+const convertToTreedata = (data: any[]) => {
+  var returnData = []
+  //遍历数据
+  for (var i = 0; i < data?.length; i++) {
+    var tempObj = {
+      title: data[i].name,
+      value: data[i].id,
+      key: data[i].id,
+      children: data[i].children,
+    }
+    if ('children' in data[i]) {
+      tempObj.children = convertToTreedata(data[i].children)
+    }
+    returnData.push(tempObj)
+  }
+  return returnData
 }
 
 const title = ref<string>('新增目录')
 const visible = ref<boolean>(false)
 
 const useForm = Form.useForm
-
-const detailInfo = reactive<any>({
-  name: '',
-  categoryParent: '',
-  sort: '',
-})
 
 const { resetFields, validateInfos, validate } = useForm(detailInfo, saftyCardConfigAddRules)
 
@@ -100,9 +115,9 @@ const handleCancel = () => {
 const handleConfirm = () => {
   const validateField = Object.keys(toRaw(detailInfo)).filter((val: string) => val !== '')
   validate(validateField).then(async () => {
-    const { code } = await apiSubmitSaftyCardConfig({ ...detailInfo })
+    const { code } = await apiConfirmCreateSaftyCardConfig({ ...detailInfo })
     if (code === 20000) {
-      message.success('添加菜单成功')
+      message.success('操作成功')
       props.handleRefresh()
     }
     handleCancel()

@@ -30,7 +30,7 @@
 <script lang="ts" setup>
 import { ref, reactive, toRaw } from 'vue'
 import { Form, message } from 'ant-design-vue'
-import { apiGetSaftyCardConfig, apiSubmitSaftyCardConfig } from '@/service/api/saftyCard'
+import { apiGetSaftyCardConfig, apiGetSaftyCardConfigProject } from '@/service/api/saftyCard'
 import { thinkCodeLibraryCatalogAddRules } from '@/validator/setting'
 
 const props = defineProps<{
@@ -45,12 +45,14 @@ const fieldNames = ref({
 
 const labelCol = { span: 5 }
 const menuTreeOptions = ref<any[]>([])
+const id = ref()
 
 /**
  * @desc 初始化对话框
  */
-const initModal = async () => {
+const initModal = async (cardId: string) => {
   visible.value = true
+  id.value = cardId
   await getMenuTreeOptions
 }
 
@@ -58,7 +60,7 @@ const initModal = async () => {
  * @desc 获取所有菜单树
  */
 const getMenuTreeOptions = async () => {
-  const { code, data } = await apiGetSaftyCardConfig()
+  const { code, data } = await apiGetSaftyCardConfig(id.value)
   if (code === 20000) {
     menuTreeOptions.value = [
       {
@@ -97,7 +99,7 @@ const handleCancel = () => {
 const handleConfirm = () => {
   const validateField = Object.keys(toRaw(detailInfo)).filter((val: string) => val !== '')
   validate(validateField).then(async () => {
-    const { code } = await apiSubmitSaftyCardConfig({ ...detailInfo })
+    const { code } = await apiGetSaftyCardConfigProject({ ...detailInfo })
     if (code === 20000) {
       message.success('添加目录成功')
       props.handleRefresh()

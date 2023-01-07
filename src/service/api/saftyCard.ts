@@ -1,14 +1,23 @@
 import { $http } from '../http/index'
-import { SubmitSaftyCardConfigInterface, SubmitSaftyCardInterface, ReNameSaftyCardInterface } from '../types/SaftyCard'
+import {
+  SubmitSaftyCardInterface,
+  ReNameSaftyCardInterface,
+  ProjectSaftyCardInterface,
+  CreateSaftyCardProjectInterface,
+  CreateSaftyCardProjectTypeInterface,
+} from '../types/SaftyCardModel'
 
 enum Api {
   getSaftyCardList = '/ecode_grant/safety_checklist_card',
   confirmCreateSaftyCard = '/ecode_grant/safety_checklist_card',
-  getSaftyCardConfig = '/xxx/sss',
-  getSaftyCardConfigProject = '/xxx/sss',
-  confirmCreateSaftyCardConfig = '/xxx/sss',
+  getSaftyCardConfigTree = '/ecode_grant/safety_checklist_card_category/tree',
+  getSaftyCardConfigProject = '/ecode_grant/safety_checklist_card_content',
+  confirmCreateSaftyCardConfig = '/ecode_grant/safety_checklist_card_category',
+  createSaftyCardProject = '/ecode_grant/safety_checklist_card_content',
+  editSaftyCardProject = '/ecode_grant/safety_checklist_card_content',
   renameSaftyCardName = '/ecode_grant/safety_checklist_card',
   deleteSaftyCard = '/ecode_grant/safety_checklist_card',
+  deleteSaftyCardProject = '/ecode_grant/safety_checklist_card_content',
   unPublishSaftyCard = '/ecode_grant/safety_checklist_card/cancel_publicsh',
   publishSaftyCard = '/ecode_grant/safety_checklist_card/publish',
 }
@@ -27,9 +36,9 @@ export function apiGetSaftyCardInfo(params: any): Promise<any> {
 /**
  * @desc: 获取配置树
  */
-export function apiGetSaftyCardConfig(): Promise<any> {
+export function apiGetSaftyCardConfig(cardId: string) {
   return $http.request({
-    url: Api.getSaftyCardConfig,
+    url: Api.getSaftyCardConfigTree + `/${cardId}`,
     method: 'GET',
   })
 }
@@ -37,10 +46,11 @@ export function apiGetSaftyCardConfig(): Promise<any> {
 /**
  * @desc: 获取配置树节点对应的项目信息
  */
-export function apiGetSaftyCardConfigProject(): Promise<any> {
+export function apiGetSaftyCardConfigProject(params: ProjectSaftyCardInterface): Promise<any> {
   return $http.request({
     url: Api.getSaftyCardConfigProject,
     method: 'GET',
+    params,
   })
 }
 
@@ -48,17 +58,6 @@ export function apiGetSaftyCardConfigProject(): Promise<any> {
  * @desc: 提交创建安全监督卡
  */
 export function apiSubmitCreateSaftyCard(params: SubmitSaftyCardInterface): Promise<any> {
-  return $http.request({
-    url: Api.confirmCreateSaftyCard,
-    method: 'POST',
-    params,
-  })
-}
-
-/**
- * @desc: 提交创建安全监督卡配置
- */
-export function apiSubmitSaftyCardConfig(params: SubmitSaftyCardConfigInterface): Promise<any> {
   return $http.request({
     url: Api.confirmCreateSaftyCard,
     method: 'POST',
@@ -88,6 +87,16 @@ export function apiDeleteSaftyCard(id: string) {
 }
 
 /**
+ * @desc 删除安全监督卡对应的项目
+ */
+export function apiDeleteSaftyCardProject(id: string) {
+  return $http.request({
+    url: Api.deleteSaftyCardProject + `/${id}`,
+    method: 'DELETE',
+  })
+}
+
+/**
  * @desc 撤销发布安全监督卡
  */
 export function apiUnPublishSaftyCard(id: string) {
@@ -107,4 +116,37 @@ export function apiPublishSaftyCard(id: string) {
   })
 }
 
-//publishSaftyCard
+/**
+ * @desc: 提交创建安全监督卡内容
+ */
+export function apiCreateSaftyCardProject(params: CreateSaftyCardProjectInterface): Promise<any> {
+  return $http.request({
+    url: Api.createSaftyCardProject,
+    method: 'POST',
+    params,
+  })
+}
+
+/**
+ * @desc: 重命名安全监督卡
+ */
+export function apiEditSaftyCardProject(params: CreateSaftyCardProjectInterface): Promise<any> {
+  return $http.request({
+    url: Api.editSaftyCardProject,
+    method: 'PUT',
+    params,
+  })
+}
+
+/**
+ * @desc: 提交创建安全监督卡分类
+ */
+export function apiConfirmCreateSaftyCardConfig(params: CreateSaftyCardProjectTypeInterface): Promise<any> {
+  return $http.request({
+    url: Api.confirmCreateSaftyCardConfig,
+    method: 'POST',
+    params,
+  })
+}
+
+//confirmCreateSaftyCardConfig

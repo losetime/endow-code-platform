@@ -159,8 +159,8 @@ export const saftyCardConfigColumns = [
   },
   {
     title: '排序',
-    key: 'sort',
-    dataIndex: 'sort',
+    key: 'orderNum',
+    dataIndex: 'orderNum',
   },
   {
     title: '操作',
