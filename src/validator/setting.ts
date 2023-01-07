@@ -66,9 +66,9 @@ export const saftyCardProjectAddRules = reactive({
 })
 
 export const saftyCardAddRules = reactive({
-  cardName: [{ required: true, message: '监督卡名称不能为空', trigger: 'change' }],
+  name: [{ required: true, message: '监督卡名称不能为空', trigger: 'change' }],
   code: [{ required: true, message: '代码不能为空', trigger: 'change' }],
-  cardType: [{ required: true, message: '监督卡类型不能为空', trigger: 'change' }],
+  type: [{ required: true, message: '监督卡类型不能为空', trigger: 'change' }],
 })
 
 export const saftyCardReNameRules = reactive({
