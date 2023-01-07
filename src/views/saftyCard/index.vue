@@ -15,7 +15,13 @@
         ref="tableInstance"
       >
         <template #slotOne="{ record }">
-          <a-button type="link" size="small" @click="handleConfig(record)">配置</a-button>
+          <a-button
+            type="link"
+            size="small"
+            :disabled="record?.status == '未发布' ? false : true"
+            @click="handleConfig(record)"
+            >配置</a-button
+          >
         </template>
         <template #action="{ record }">
           <a-space v-if="record?.status == '已发布'">

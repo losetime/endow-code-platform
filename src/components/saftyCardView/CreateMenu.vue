@@ -22,8 +22,15 @@
           :tree-data="menuTreeOptions"
         />
       </a-form-item>
-      <a-form-item label="分类排序" v-bind="validateInfos.orderNum">
-        <a-input v-model:value="detailInfo.orderNum" placeholder="请输入分类排序" />
+      <a-form-item label="排序" v-bind="validateInfos.orderNum" style="margin-right: 5px">
+        <a-input
+          v-model:value="detailInfo.orderNum"
+          placeholder="请输入分类排序"
+          :allowClear="true"
+          type="number"
+          @change="onChange"
+          :min="0"
+        />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -124,6 +131,11 @@ const handleConfirm = () => {
     handleCancel()
   })
 }
+
+const onChange = () => {
+  detailInfo.orderNum = detailInfo.orderNum.replace(/[^\d]/g, '')
+}
+
 defineExpose({
   initModal,
 })

@@ -2,6 +2,9 @@
   <div class="content-body">
     <div class="left-body">
       <a-button type="primary" style="margin-bottom: 14px" @click="handleAdd">新增</a-button>
+      <template v-if="!isTableShow">
+        <a-empty />
+      </template>
       <ym-tree
         ref="configTreeInstance"
         :tree-data="menuTreeOptions"
@@ -38,6 +41,9 @@
             </a-space>
           </template>
         </ym-table>
+      </template>
+      <template v-if="!isTableShow">
+        <a-empty />
       </template>
     </div>
     <create-project
