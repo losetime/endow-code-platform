@@ -45,6 +45,7 @@
                 title="确认删除该安全监督卡对应的项目吗?"
                 ok-text="确认"
                 cancel-text="取消"
+                :disabled="status !== '未发布'"
                 @confirm="handleDeletProject(record.id)"
               >
                 <a-button type="link" size="small" :disabled="status !== '未发布'">删除</a-button>
