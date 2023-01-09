@@ -51,7 +51,7 @@ export const deptDetailRules = reactive({
 
 export const saftyCardConfigAddRules = reactive({
   categoryName: [{ required: true, message: '分类名称不能为空', trigger: 'change' }],
-  parentId: [{ required: true, type: 'number', message: '上级菜单不能为空', trigger: 'change' }],
+  parentId: [{ required: true, message: '上级分类不能为空', trigger: 'change' }],
   orderNum: [{ required: true, message: '分类排序不能为空', trigger: 'change' }],
 })
 

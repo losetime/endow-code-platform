@@ -54,7 +54,7 @@ const useForm = Form.useForm
 const detailInfo = reactive<any>({
   name: '',
   code: '',
-  type: '',
+  type: null,
 })
 
 const { resetFields, validateInfos, validate } = useForm(detailInfo, saftyCardAddRules)

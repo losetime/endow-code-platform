@@ -14,10 +14,9 @@
       <a-form-item label="上级分类" v-bind="validateInfos.parentId">
         <a-tree-select
           v-model:value="detailInfo.parentId"
-          treeNodeLabelProp="title"
           style="width: 100%"
           :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-          placeholder="请选择上级菜单"
+          placeholder="请选择上级分类"
           allow-clear
           :tree-data="menuTreeOptions"
         />
@@ -51,7 +50,7 @@ const detailInfo = reactive<any>({
   categoryName: '',
   orderNum: '',
   safetyCardId: '',
-  parentId: '',
+  parentId: null,
 })
 
 const labelCol = { span: 5 }
@@ -63,7 +62,6 @@ const menuTreeOptions = ref<any[]>([
   },
 ])
 
-// const fieldNames = ref({ children: 'children', key: 'parentId', value: 'id', title: 'name' })
 /**
  * @desc 初始化对话框
  */
