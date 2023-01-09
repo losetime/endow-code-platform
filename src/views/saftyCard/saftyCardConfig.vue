@@ -1,7 +1,9 @@
 <template>
   <div class="content-body">
     <div class="left-body">
-      <a-button type="primary" style="margin-bottom: 14px" @click="handleAdd">新增</a-button>
+      <a-button type="primary" :disabled="status !== '未发布'" style="margin-bottom: 14px" @click="handleAdd"
+        >新增</a-button
+      >
       <template v-if="!isTableShow">
         <a-empty />
       </template>
@@ -16,7 +18,9 @@
       <create-menu ref="detailInstance" :handleRefresh="handleMenuRefresh" :getSourceData="getMenuSourceData" />
     </div>
     <div class="right-body">
-      <a-button type="primary" style="margin-bottom: 14px" @click="handleAddProject">新增项目</a-button>
+      <a-button type="primary" :disabled="status !== '未发布'" style="margin-bottom: 14px" @click="handleAddProject"
+        >新增项目</a-button
+      >
       <template v-if="isTableShow">
         <ym-table
           rowKey="id"
@@ -28,7 +32,14 @@
         >
           <template #action="{ record }">
             <a-space>
-              <a-button class="btn-item" type="link" size="small" @click="handleEditProject(record)">编辑</a-button>
+              <a-button
+                class="btn-item"
+                type="link"
+                :disabled="status !== '未发布'"
+                size="small"
+                @click="handleEditProject(record)"
+                >编辑</a-button
+              >
               <a-popconfirm
                 placement="topRight"
                 title="确认删除该安全监督卡对应的项目吗?"
@@ -36,7 +47,7 @@
                 cancel-text="取消"
                 @confirm="handleDeletProject(record.id)"
               >
-                <a-button type="link" size="small">删除</a-button>
+                <a-button type="link" size="small" :disabled="status !== '未发布'">删除</a-button>
               </a-popconfirm>
             </a-space>
           </template>
@@ -67,6 +78,7 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const cardId = route.query?.cardId as string
+const status = route.query?.status as string
 
 const isTableShow = ref()
 
