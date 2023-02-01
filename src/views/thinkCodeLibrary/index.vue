@@ -32,9 +32,10 @@
       <ym-table
         rowKey="id"
         :columns="thinkCodeLibraryColumns"
-        :getTableList="apiGetCodeList"
+        :getTableList="apiGetThinkCodeLibrary"
         :params="searchParams"
         style="margin-top: 14px"
+        :isImmediately="loadApi"
         ref="tableInstance"
       >
         <template #action="{ record }">
@@ -50,17 +51,20 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import YmTree from '@/components/common/YmTree.vue'
 import YmTable from '@/components/common/YmTable.vue'
 import { thinkCodeLibraryColumns } from '@/columns/home'
-import { apiGetCodeList } from '@/service/api/thinkCodeLibrary'
+import { apiGetThinkCodeLibrary } from '@/service/api/thinkCodeLibrary'
+import { apiGetCategoryTree } from '@/service/api/common'
 import CreateCatalog from '@/components/thinkCodeLibrary/CreateCatalog.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const searchParams = reactive({ title: '' })
+const loadApi = ref(false)
+
+const searchParams = ref<any>({ title: '', categoryId: '' })
 // 表格实例
 const tableInstance = ref()
 
@@ -69,9 +73,11 @@ const detailInstance = ref()
 const configTreeInstance = ref()
 
 const fieldNames = ref({
-  title: 'label',
+  title: 'name',
   key: 'id',
 })
+
+const treeListParam = reactive({ type: 'SMART_CODE' })
 
 /**
  * @desc 列表刷新
@@ -87,16 +93,27 @@ const getSourceData = () => {
   configTreeInstance.value.handleReacquire()
 }
 
-const menuTreeOptions = ref<any[]>([
-  {
-    id: 100,
-    label: '数据部',
-    children: [
-      { id: 108, label: '测试', children: [{ id: 112, label: 'b组' }] },
-      { id: 103, label: '研发部', children: [{ id: 104, label: 'A组', children: [] }] },
-    ],
-  },
-])
+// const getCodeTableList = () => {
+//   tableInstance.value.handleReacquire()
+// }
+
+const menuTreeOptions = ref<any[]>([])
+
+onMounted(() => {
+  getMenuTreeOptions()
+})
+
+const getMenuTreeOptions = async () => {
+  const { code, data } = await apiGetCategoryTree(treeListParam)
+  if (code === 20000) {
+    menuTreeOptions.value = data || []
+    if (menuTreeOptions?.value?.length > 0) {
+      searchParams.value.categoryId = menuTreeOptions.value[0].id
+      loadApi.value = true
+      tableInstance.value.handleReacquire()
+    }
+  }
+}
 
 const detailInfo = reactive<any>({
   roleName: '',
@@ -109,8 +126,11 @@ const detailInfo = reactive<any>({
 })
 
 const onSelect = (keys: number[] | string[]) => {
-  console.log('selected', keys)
-  //TODO 重新获取项目列表
+  console.log('key', keys)
+  if (keys.length > 0) {
+    searchParams.value.categoryId = keys[0]
+    tableInstance.value.handleReacquire()
+  }
 }
 const handleAdd = () => {
   detailInstance.value.initModal()

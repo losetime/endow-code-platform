@@ -57,7 +57,7 @@ const labelCol = { span: 5 }
 const menuTreeOptions = ref<any[]>([
   {
     title: '无上级分类',
-    value: '0',
+    value: '-1',
     key: '0',
   },
 ])

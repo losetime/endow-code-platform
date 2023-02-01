@@ -6,6 +6,8 @@ enum Api {
   uploadAuth = '/api/v1/oss/uploadOss',
   readOss = '/api.dev.jwschain.cn/api/v1/oss/readImage',
   getDicts = '/usermanager/system/dict/data/type',
+  uploadFile = '/ecode_grant/file/upload', //上传文件
+  getCategoryTree = '/ecode_grant/common_category/tree',
 }
 
 /**
@@ -53,5 +55,16 @@ export function apiGetDicts(params: { typeKey: string }) {
   return $http.request({
     url: Api.getDicts + `/${params.typeKey}`,
     method: 'GET',
+  })
+}
+
+/**
+ * @description: 获取后端字典
+ */
+export function apiGetCategoryTree(params: any) {
+  return $http.request({
+    url: Api.getCategoryTree,
+    method: 'GET',
+    params,
   })
 }

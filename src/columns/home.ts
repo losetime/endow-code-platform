@@ -180,6 +180,11 @@ export const thinkCodeLibraryColumns = [
     key: 'title',
   },
   {
+    title: '所属目录',
+    dataIndex: 'categoryName',
+    key: 'categoryName',
+  },
+  {
     title: '创建时间',
     key: 'createTime',
     dataIndex: 'createTime',

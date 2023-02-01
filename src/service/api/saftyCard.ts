@@ -23,7 +23,7 @@ enum Api {
 }
 
 /**
- * @desc: 获取token
+ * @desc: 获取安全监督卡
  */
 export function apiGetSaftyCardInfo(params: any): Promise<any> {
   return $http.request({
