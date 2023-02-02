@@ -19,7 +19,7 @@
     <div class="right-body">
       <div class="search-item">
         <a-space>
-          <a-button type="primary" @click="handleNewContent">新增</a-button>
+          <a-button type="primary" @click="handleNewContent(searchParams.categoryId)">新增</a-button>
           <a-button type="primary" ghost style="margin-left: 12px">批量下载</a-button>
         </a-space>
         <a-space>
@@ -136,9 +136,10 @@ const handleAdd = () => {
   detailInstance.value.initModal()
 }
 
-const handleNewContent = () => {
+const handleNewContent = (scope: any) => {
   router.push({
     name: 'CreatThinkCodeLibrary',
+    query: { id: scope },
   })
 }
 

@@ -22,7 +22,7 @@ export function apiGetThinkCodeLibrary(params: any): Promise<any> {
 /**
  * @desc: 新增智码库
  */
-export function apiCreatThinkCodeLibrary(params: NewThinkCodeLibrary): Promise<any> {
+export function apiCreatThinkCodeLibrary(params: any): Promise<any> {
   return $http.request({
     url: Api.createGrantInfo,
     method: 'POST',
