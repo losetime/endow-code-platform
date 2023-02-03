@@ -158,8 +158,8 @@ const handleCheck = (scope: any) => {
 /**
  * @desc 列表搜索
  */
-const onSearch = () => {
-  tableInstance.value.handleReacquire()
+const onSearch = (page?: number) => {
+  tableInstance.value.handleReacquire(page)
 }
 </script>
 
