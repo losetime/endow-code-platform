@@ -68,6 +68,10 @@ const handleReacquire = (page?: number) => {
  */
 const handleDownloadCode = () => {
   const base64Arr: any[] = []
+  if (selectedRows.value.length == 0) {
+    message.info('请选择条目后重试！')
+    return
+  }
   selectedRows.value.forEach((item: any) => {
     base64Arr.push({
       name: item.vrSn,

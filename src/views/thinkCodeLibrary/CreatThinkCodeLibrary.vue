@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import richText from '@/components/richText/richText.vue'
 import { message } from 'ant-design-vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -79,6 +79,16 @@ const saveParam = reactive<SaveParam>({
   attachments: [],
   categoryId: '',
 })
+
+/**
+ * @desc 初始化对话框
+ */
+const initModal = (scope: any) => {
+  saveParam.title = scope.title
+  saveParam.content = scope.content
+  saveParam.attachments = scope.attachments
+  saveParam.categoryId = scope.categoryId
+}
 
 let validateTitle = async (_rule: Rule, value: string) => {
   if (value === '') {
@@ -151,6 +161,10 @@ const handleChange = (info: UploadChangeParam) => {
 
   fileList.value = resFileList
 }
+
+defineExpose({
+  initModal,
+})
 </script>
 
 <style lang="less" scoped>

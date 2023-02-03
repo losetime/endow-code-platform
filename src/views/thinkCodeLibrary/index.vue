@@ -20,7 +20,7 @@
       <div class="search-item">
         <a-space>
           <a-button type="primary" @click="handleNewContent(searchParams.categoryId)">新增</a-button>
-          <a-button type="primary" ghost style="margin-left: 12px">批量下载</a-button>
+          <a-button type="primary" ghost style="margin-left: 12px" @click="handleBatchDownLoad()">批量下载</a-button>
         </a-space>
         <a-space>
           <span>标题：</span>
@@ -40,9 +40,9 @@
       >
         <template #action="{ record }">
           <a-space>
-            <a-button type="link" size="small" @click="handleEdit(record)"> 编辑 </a-button>
+            <a-button type="link" size="small" @click="handleEdit(record.id)"> 编辑 </a-button>
             <span class="list-span">|</span>
-            <a-button type="link" size="small" @click="handleCheck(record)">下载二维码</a-button>
+            <a-button type="link" size="small" @click="handleDownLoadCode(record)">下载二维码</a-button>
           </a-space>
         </template>
       </ym-table>
@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import YmTree from '@/components/common/YmTree.vue'
 import YmTable from '@/components/common/YmTable.vue'
 import { thinkCodeLibraryColumns } from '@/columns/home'
@@ -60,9 +60,15 @@ import { apiGetCategoryTree } from '@/service/api/common'
 import CreateCatalog from '@/components/thinkCodeLibrary/CreateCatalog.vue'
 import { useRouter } from 'vue-router'
 
+import { createQRCode, downloadQRCode } from '@/utils/base'
+import { saveAs } from 'file-saver'
+import { message } from 'ant-design-vue'
+
 const router = useRouter()
 
 const loadApi = ref(false)
+
+const imgUrl = ref('')
 
 const searchParams = ref<any>({ title: '', categoryId: '' })
 // 表格实例
@@ -71,6 +77,9 @@ const tableInstance = ref()
 const detailInstance = ref()
 
 const configTreeInstance = ref()
+
+// 选择表格
+const selectedRows = computed(() => (tableInstance.value ? tableInstance.value.selectedRows : []))
 
 const fieldNames = ref({
   title: 'name',
@@ -144,15 +153,38 @@ const handleNewContent = (scope: any) => {
 }
 
 const handleEdit = (scope: any) => {
-  console.log(scope)
+  router.push({
+    name: 'CreatThinkCodeLibrary',
+    query: { id: scope.id },
+  })
 }
 
 /**
  * 下载二维码
  * @param scope
  */
-const handleCheck = (scope: any) => {
-  console.log(scope)
+const handleDownLoadCode = (scope: any) => {
+  imgUrl.value = createQRCode(scope.qrCode)
+  console.log(scope.qrCode)
+  saveAs(imgUrl.value, `${scope.id}.png`)
+}
+
+/**
+ * @desc 下载二维码
+ */
+const handleBatchDownLoad = () => {
+  if (selectedRows.value.length == 0) {
+    message.info('请选择条目后重试！')
+    return
+  }
+  const base64Arr: any[] = []
+  selectedRows.value.forEach((item: any) => {
+    base64Arr.push({
+      name: item.id,
+      file: createQRCode(item.qrCode),
+    })
+  })
+  downloadQRCode(base64Arr)
 }
 
 /**
