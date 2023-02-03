@@ -42,7 +42,6 @@ import { apiGetSaftyCardConfig, apiConfirmCreateSaftyCardConfig } from '@/servic
 import { saftyCardConfigAddRules } from '@/validator/setting'
 
 const props = defineProps<{
-  handleRefresh: Function
   getSourceData: Function
 }>()
 
@@ -124,7 +123,7 @@ const handleConfirm = () => {
     const { code } = await apiConfirmCreateSaftyCardConfig({ ...detailInfo })
     if (code === 20000) {
       message.success('操作成功')
-      props.handleRefresh()
+      props.getSourceData()
     }
     handleCancel()
   })

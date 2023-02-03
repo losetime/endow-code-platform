@@ -15,7 +15,7 @@
         :onSelect="onSelect"
         :showLine="false"
       />
-      <create-menu ref="detailInstance" :handleRefresh="handleMenuRefresh" :getSourceData="getMenuSourceData" />
+      <create-menu ref="detailInstance" :getSourceData="getMenuSourceData" />
     </div>
     <div class="right-body">
       <a-button type="primary" :disabled="status !== '未发布'" style="margin-bottom: 14px" @click="handleAddProject"
@@ -106,13 +106,6 @@ const fieldNames = ref({
 /**
  * @desc 列表刷新
  */
-const handleMenuRefresh = () => {
-  getMenuTreeOptions(cardId)
-}
-
-/**
- * @desc 列表刷新
- */
 const handleProjectRefresh = () => {
   tableInstance.value.handleReacquire(1)
 }
@@ -121,7 +114,7 @@ const handleProjectRefresh = () => {
  * @desc 重新获取当前页列表
  */
 const getMenuSourceData = () => {
-  configTreeInstance.value.handleReacquire()
+  getMenuTreeOptions(cardId)
 }
 
 const getProjectSourceData = () => {

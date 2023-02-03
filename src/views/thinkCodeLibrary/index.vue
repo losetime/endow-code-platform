@@ -15,7 +15,7 @@
         :showLine="false"
       />
     </div>
-    <create-catalog ref="detailInstance" :handleRefresh="handleRefresh" :getSourceData="getSourceData" />
+    <create-catalog ref="detailInstance" :handleRefresh="handleTreeRefresh" />
     <div class="right-body">
       <div class="search-item">
         <a-space>
@@ -91,20 +91,9 @@ const treeListParam = reactive({ type: 'SMART_CODE' })
 /**
  * @desc 列表刷新
  */
-const handleRefresh = () => {
-  configTreeInstance.value.handleReacquire(1)
+const handleTreeRefresh = () => {
+  getMenuTreeOptions()
 }
-
-/**
- * @desc 重新获取当前页列表
- */
-const getSourceData = () => {
-  configTreeInstance.value.handleReacquire()
-}
-
-// const getCodeTableList = () => {
-//   tableInstance.value.handleReacquire()
-// }
 
 const menuTreeOptions = ref<any[]>([])
 
@@ -155,7 +144,7 @@ const handleNewContent = (scope: any) => {
 const handleEdit = (scope: any) => {
   router.push({
     name: 'CreatThinkCodeLibrary',
-    query: { id: scope.id },
+    query: { codeId: scope.id },
   })
 }
 

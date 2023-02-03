@@ -8,14 +8,12 @@
     width="450px"
   >
     <a-form :label-col="labelCol" labelAlign="left">
-      <a-form-item label="目录名称" v-bind="validateInfos.name">
-        <a-input v-model:value="detailInfo.name" placeholder="请输入目录名称" />
+      <a-form-item label="目录名称" v-bind="validateInfos.categoryName">
+        <a-input v-model:value="detailInfo.categoryName" placeholder="请输入目录名称" />
       </a-form-item>
-      <a-form-item label="上级目录" v-bind="validateInfos.categoryParent">
+      <a-form-item label="上级目录" v-bind="validateInfos.parentId">
         <a-tree-select
-          v-model:value="detailInfo.categoryParent"
-          show-search
-          :field-names="fieldNames"
+          v-model:value="detailInfo.parentId"
           style="width: 100%"
           :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
           placeholder="请选择上级菜单"
@@ -30,47 +28,65 @@
 <script lang="ts" setup>
 import { ref, reactive, toRaw } from 'vue'
 import { Form, message } from 'ant-design-vue'
-import { apiGetSaftyCardConfig, apiGetSaftyCardConfigProject } from '@/service/api/saftyCard'
 import { thinkCodeLibraryCatalogAddRules } from '@/validator/setting'
+import { apiGetCategoryTree, apiCreateCategoryTree } from '@/service/api/common'
+
+const treeListParam = reactive({ type: 'SMART_CODE' })
 
 const props = defineProps<{
   handleRefresh: Function
-  getSourceData: Function
 }>()
 
-const fieldNames = ref({
-  title: 'label',
-  value: 'id',
-})
+// const fieldNames = ref({
+//   label: 'name',
+//   value: 'id',
+// })
 
 const labelCol = { span: 5 }
-const menuTreeOptions = ref<any[]>([])
-const id = ref()
+const menuTreeOptions = ref<any[]>([
+  {
+    title: '无上级分类',
+    value: '-1',
+    key: '0',
+  },
+])
 
 /**
  * @desc 初始化对话框
  */
-const initModal = async (cardId: string) => {
+const initModal = () => {
   visible.value = true
-  id.value = cardId
-  await getMenuTreeOptions
+  getMenuTreeOptions()
 }
 
 /**
  * @desc 获取所有菜单树
  */
 const getMenuTreeOptions = async () => {
-  const { code, data } = await apiGetSaftyCardConfig(id.value)
+  const { code, data } = await apiGetCategoryTree(treeListParam)
   if (code === 20000) {
-    menuTreeOptions.value = [
-      {
-        label: '主类目',
-        id: 0,
-        children: data,
-      },
-    ]
-    console.log(menuTreeOptions.value)
+    var res = await convertToTreedata(data)
+    console.log(res)
+    menuTreeOptions.value.push(...res)
   }
+}
+
+const convertToTreedata = (data: any[]) => {
+  var returnData = []
+  //遍历数据
+  for (var i = 0; i < data?.length; i++) {
+    var tempObj = {
+      title: data[i].name,
+      value: data[i].id,
+      key: data[i].id,
+      children: data[i].children,
+    }
+    if (data[i]?.children?.length) {
+      tempObj.children = convertToTreedata(data[i].children)
+    }
+    returnData.push(tempObj)
+  }
+  return returnData
 }
 
 const title = ref<string>('新增目录')
@@ -79,9 +95,9 @@ const visible = ref<boolean>(false)
 const useForm = Form.useForm
 
 const detailInfo = reactive<any>({
-  name: '',
-  categoryParent: '',
-  sort: '',
+  categoryName: '',
+  parentId: '',
+  type: '0',
 })
 
 const { resetFields, validateInfos, validate } = useForm(detailInfo, thinkCodeLibraryCatalogAddRules)
@@ -92,6 +108,7 @@ const { resetFields, validateInfos, validate } = useForm(detailInfo, thinkCodeLi
 const handleCancel = () => {
   resetFields()
   visible.value = false
+  menuTreeOptions.value.length = 1
 }
 /**
  * @desc 确认
@@ -99,7 +116,7 @@ const handleCancel = () => {
 const handleConfirm = () => {
   const validateField = Object.keys(toRaw(detailInfo)).filter((val: string) => val !== '')
   validate(validateField).then(async () => {
-    const { code } = await apiGetSaftyCardConfigProject({ ...detailInfo })
+    const { code } = await apiCreateCategoryTree({ ...detailInfo })
     if (code === 20000) {
       message.success('添加目录成功')
       props.handleRefresh()

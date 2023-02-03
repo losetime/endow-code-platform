@@ -56,8 +56,8 @@ export const saftyCardConfigAddRules = reactive({
 })
 
 export const thinkCodeLibraryCatalogAddRules = reactive({
-  name: [{ required: true, message: '目录名称不能为空', trigger: 'change' }],
-  categoryParent: [{ required: true, type: 'number', message: '上级目录不能为空', trigger: 'change' }],
+  categoryName: [{ required: true, message: '目录名称不能为空', trigger: 'change' }],
+  parentId: [{ required: true, message: '上级目录不能为空', trigger: 'change' }],
 })
 
 export const saftyCardProjectAddRules = reactive({

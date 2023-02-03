@@ -8,6 +8,7 @@ enum Api {
   getDicts = '/usermanager/system/dict/data/type',
   uploadFile = '/ecode_grant/file/upload', //上传文件
   getCategoryTree = '/ecode_grant/common_category/tree',
+  createCateGory = '/ecode_grant/common_category',
 }
 
 /**
@@ -65,6 +66,17 @@ export function apiGetCategoryTree(params: any) {
   return $http.request({
     url: Api.getCategoryTree,
     method: 'GET',
+    params,
+  })
+}
+
+/**
+ * @description: 获取后端字典
+ */
+export function apiCreateCategoryTree(params: any) {
+  return $http.request({
+    url: Api.createCateGory,
+    method: 'POST',
     params,
   })
 }

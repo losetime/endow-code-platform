@@ -52,8 +52,9 @@ import type { UploadChangeParam } from 'ant-design-vue'
 const route = useRoute()
 const router = useRouter()
 const categoryId = route.query?.id as string
-const formInstance = ref<any>()
+const codeId = route.query?.codeId as string
 
+const formInstance = ref<any>()
 const textInstance = ref<any>(null)
 
 const baseUrl = import.meta.env.VITE_API_DOMAIN
@@ -65,6 +66,12 @@ const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 14 },
 }
+
+onMounted(() => {
+  if (codeId !== '') {
+    //TODO 请求获取详情的api
+  }
+})
 
 interface SaveParam {
   title: string
@@ -79,16 +86,6 @@ const saveParam = reactive<SaveParam>({
   attachments: [],
   categoryId: '',
 })
-
-/**
- * @desc 初始化对话框
- */
-const initModal = (scope: any) => {
-  saveParam.title = scope.title
-  saveParam.content = scope.content
-  saveParam.attachments = scope.attachments
-  saveParam.categoryId = scope.categoryId
-}
 
 let validateTitle = async (_rule: Rule, value: string) => {
   if (value === '') {
@@ -161,10 +158,6 @@ const handleChange = (info: UploadChangeParam) => {
 
   fileList.value = resFileList
 }
-
-defineExpose({
-  initModal,
-})
 </script>
 
 <style lang="less" scoped>
