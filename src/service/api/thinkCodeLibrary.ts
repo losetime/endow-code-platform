@@ -1,11 +1,11 @@
 import { $http } from '../http/index'
-import { NewThinkCodeLibrary } from '../types/thinkCodeLibrary'
 
 enum Api {
   getThinkCodeLibrary = '/ecode_grant/smart_code_content', //智码库内容列表(分页)+搜索
   createGrantInfo = '/ecode_grant/smart_code_content', //新建智码库内容
   editGrantInfo = '/ecode_grant/smart_code_content', //编辑智码库内容
   delGrantInfo = '/ecode_grant/smart_code_content/',
+  getThinkCodeInfo = '/ecode_grant/smart_code_content/', //获取智码库详情
 }
 
 /**
@@ -33,11 +33,21 @@ export function apiCreatThinkCodeLibrary(params: any): Promise<any> {
 /**
  * @desc: 编辑智码库
  */
-export function apiEditThinkCodeLibrary(params: NewThinkCodeLibrary): Promise<any> {
+export function apiEditThinkCodeLibrary(params: any): Promise<any> {
   return $http.request({
     url: Api.editGrantInfo,
     method: 'PUT',
     params,
+  })
+}
+
+/**
+ * @desc: 获取智码库详情
+ */
+export function apiGetThinkCodeInfo(id: string): Promise<any> {
+  return $http.request({
+    url: Api.getThinkCodeInfo + `${id}`,
+    method: 'GET',
   })
 }
 

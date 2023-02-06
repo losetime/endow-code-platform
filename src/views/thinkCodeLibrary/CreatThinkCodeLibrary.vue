@@ -45,7 +45,7 @@ import { ref, reactive, onMounted } from 'vue'
 import richText from '@/components/richText/richText.vue'
 import { message } from 'ant-design-vue'
 import { useRoute, useRouter } from 'vue-router'
-import { apiCreatThinkCodeLibrary } from '@/service/api/thinkCodeLibrary'
+import { apiCreatThinkCodeLibrary, apiGetThinkCodeInfo, apiEditThinkCodeLibrary } from '@/service/api/thinkCodeLibrary'
 import type { Rule } from 'ant-design-vue/es/form'
 import type { UploadChangeParam } from 'ant-design-vue'
 
@@ -60,7 +60,7 @@ const textInstance = ref<any>(null)
 const baseUrl = import.meta.env.VITE_API_DOMAIN
 const uploadFileUrl = ref(baseUrl + 'ecode_grant/file/upload')
 
-const fileList = ref<any[]>([])
+const fileList = ref<any>([])
 
 const layout = {
   labelCol: { span: 4 },
@@ -69,7 +69,7 @@ const layout = {
 
 onMounted(() => {
   if (codeId !== '') {
-    //TODO 请求获取详情的api
+    getThinkCodeDetailInfo()
   }
 })
 
@@ -78,6 +78,7 @@ interface SaveParam {
   content: string
   attachments: string[]
   categoryId: string
+  id: string
 }
 
 const saveParam = reactive<SaveParam>({
@@ -85,7 +86,26 @@ const saveParam = reactive<SaveParam>({
   content: '',
   attachments: [],
   categoryId: '',
+  id: '',
 })
+
+const getThinkCodeDetailInfo = async () => {
+  const { code, data } = await apiGetThinkCodeInfo(codeId)
+  if (code === 20000) {
+    saveParam.title = data.title
+    saveParam.content = data.content
+    textInstance.value.valueHtml = saveParam.content
+    const att = data.attachments.filter((v: any) => v)
+    if (att.length !== 0) {
+      att.map((item: any) => {
+        let strArry = item.split('\_\_')
+        let nameStr = strArry[1].split('\?')
+        let name = decodeURI(nameStr[0])
+        fileList.value.push({ name: name, url: item, status: 'done', thumbUrl: item })
+      })
+    }
+  }
+}
 
 let validateTitle = async (_rule: Rule, value: string) => {
   if (value === '') {
@@ -112,7 +132,7 @@ const handleFinish = async (values: SaveParam) => {
   saveParam.content = textInstance.value.valueHtml
   saveParam.categoryId = categoryId
   const param = { ...saveParam }
-  if (fileList.value.length > 0) {
+  if (fileList.value?.length > 0) {
     let urls = []
     for (let [, item] of fileList.value.entries()) {
       if (item.status === 'done') {
@@ -124,13 +144,23 @@ const handleFinish = async (values: SaveParam) => {
     let attachment = null
     Object.assign(param, { attachment })
   }
-
-  const { code, msg } = await apiCreatThinkCodeLibrary(param)
-  if (code === 20000) {
-    message.success(msg)
-    router.back()
+  if (codeId !== '') {
+    param['id'] = codeId
+    const { code, msg } = await apiEditThinkCodeLibrary(param)
+    if (code === 20000) {
+      message.success(msg)
+      router.back()
+    } else {
+      message.error(msg)
+    }
   } else {
-    message.error(msg)
+    const { code, msg } = await apiCreatThinkCodeLibrary(param)
+    if (code === 20000) {
+      message.success(msg)
+      router.back()
+    } else {
+      message.error(msg)
+    }
   }
 }
 
@@ -143,6 +173,7 @@ const handleValidate = (...args: any[]) => {
 }
 
 const handleChange = (info: UploadChangeParam) => {
+  console.log(info.fileList)
   let resFileList = [...info.fileList]
   // 1. Limit the number of uploaded files
   //    Only to show two recent uploaded files, and old ones will be replaced by the new

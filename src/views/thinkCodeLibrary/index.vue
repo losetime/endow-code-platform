@@ -40,7 +40,7 @@
       >
         <template #action="{ record }">
           <a-space>
-            <a-button type="link" size="small" @click="handleEdit(record.id)"> 编辑 </a-button>
+            <a-button type="link" size="small" @click="handleEdit(record.id, searchParams.categoryId)"> 编辑 </a-button>
             <span class="list-span">|</span>
             <a-button type="link" size="small" @click="handleDownLoadCode(record)">下载二维码</a-button>
           </a-space>
@@ -141,10 +141,10 @@ const handleNewContent = (scope: any) => {
   })
 }
 
-const handleEdit = (scope: any) => {
+const handleEdit = (scope: any, categoryId: string) => {
   router.push({
     name: 'CreatThinkCodeLibrary',
-    query: { codeId: scope.id },
+    query: { codeId: scope, id: categoryId },
   })
 }
 
