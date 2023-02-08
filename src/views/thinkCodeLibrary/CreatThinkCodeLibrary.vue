@@ -3,7 +3,6 @@
     <div class="search-temp">
       <a-form
         labelAlign="left"
-        ref="formInstance"
         :model="saveParam"
         :rules="rules"
         v-bind="layout"
@@ -54,11 +53,9 @@ const router = useRouter()
 const categoryId = route.query?.id as string
 const codeId = route.query?.codeId as string
 
-const formInstance = ref<any>()
 const textInstance = ref<any>(null)
 
-const baseUrl = import.meta.env.VITE_API_DOMAIN
-const uploadFileUrl = ref(baseUrl + 'ecode_grant/file/upload')
+const uploadFileUrl = ref('/ecode_grant/file/upload')
 
 const fileList = ref<any>([])
 
@@ -68,7 +65,7 @@ const layout = {
 }
 
 onMounted(() => {
-  if (codeId !== '') {
+  if (codeId) {
     getThinkCodeDetailInfo()
   }
 })
@@ -116,7 +113,8 @@ let validateTitle = async (_rule: Rule, value: string) => {
 
 //
 let validateContent = async (_rule: Rule) => {
-  if (textInstance.value.valueHtml.includes('<p><br></p>')) {
+  if (textInstance?.value.valueHtml == '<p><br></p>') {
+    console.log(textInstance?.value.valueHtml)
     return Promise.reject('请输入内容')
   }
   return Promise.resolve()
@@ -144,7 +142,7 @@ const handleFinish = async (values: SaveParam) => {
     let attachment = null
     Object.assign(param, { attachment })
   }
-  if (codeId !== '') {
+  if (codeId) {
     param['id'] = codeId
     const { code, msg } = await apiEditThinkCodeLibrary(param)
     if (code === 20000) {

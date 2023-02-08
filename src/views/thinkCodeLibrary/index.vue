@@ -6,6 +6,7 @@
         <a-button type="primary" style="margin-bottom: 14px" @click="handleAdd">新增目录</a-button>
       </div>
       <ym-tree
+        v-if="menuTreeOptions.length > 0"
         ref="configTreeInstance"
         :tree-data="menuTreeOptions"
         :field-names="fieldNames"
@@ -14,6 +15,9 @@
         @select="onSelect"
         :showLine="false"
       />
+      <template v-else>
+        <a-empty />
+      </template>
     </div>
     <create-catalog ref="detailInstance" :handleRefresh="handleTreeRefresh" />
     <div class="right-body">
@@ -24,7 +28,7 @@
         </a-space>
         <a-space>
           <span>标题：</span>
-          <a-input v-model:value="searchParams.title" placeholder="请输入" allowClear />
+          <a-input v-model:value="searchParams.title" placeholder="输入标题搜索" allowClear />
           <a-button type="primary" @click="onSearch">查询</a-button>
         </a-space>
       </div>
