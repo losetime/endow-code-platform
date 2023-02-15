@@ -124,12 +124,12 @@ export interface IGetDeptList {
  * @description: 添加部门
  */
 export interface IAddDept {
-  deptId?: number
   deptName: string
-  email: string
-  leader: string
   orderNum: number
-  parentId: number
-  phone: string
+  parentId: string[]
   status: string
+  orgType: string
+  relateLsdDeptId: string
+  superDept: string
+  orgTypeId: string
 }

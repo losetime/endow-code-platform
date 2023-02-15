@@ -5,34 +5,66 @@
     :destroyOnClose="true"
     :afterClose="handleCancel"
     @ok="handleConfirm"
-    width="600px"
   >
-    <a-form :label-col="labelCol" labelAlign="left">
-      <a-form-item label="上级部门" v-bind="validateInfos.parentId">
+    <a-form :label-col="labelCol" labelAlign="right">
+      <a-form-item label="部门/公司">
+        <a-radio-group v-model:value="detailInfo.orgType" @change="radioGroupChange">
+          <a-radio value="COMPANY">公司</a-radio>
+          <a-radio value="DEPARTMENT">部门</a-radio>
+        </a-radio-group>
+      </a-form-item>
+      <a-form-item :label="detailInfo.orgType == 'COMPANY' ? '公司名称' : '部门名称'" v-bind="validateInfos.deptName">
+        <a-input
+          v-model:value="detailInfo.deptName"
+          :placeholder="detailInfo.orgType == 'COMPANY' ? '请输入公司名称' : '请输入部门名称'"
+          @change="getLsdDeptData"
+        />
+      </a-form-item>
+      <a-form-item :label="detailInfo.orgType == 'COMPANY' ? '上级公司' : '上级部门'" v-bind="validateInfos.parentId">
         <a-cascader
           v-model:value="detailInfo.parentId"
           :field-names="{ value: 'id' }"
           :options="deptOptions"
-          placeholder="请选择上级部门"
+          :placeholder="detailInfo.orgType == 'COMPANY' ? '请选择上级公司' : '请选择上级部门'"
           change-on-select
         />
       </a-form-item>
-      <a-form-item label="部门名称" v-bind="validateInfos.deptName">
-        <a-input v-model:value="detailInfo.deptName" placeholder="请输入部门名称" />
+      <a-form-item :label="detailInfo.orgType == 'COMPANY' ? '公司类型' : '部门类型'" v-bind="validateInfos.orgTypeId">
+        <a-select
+          v-model:value="detailInfo.orgTypeId"
+          placeholder="请选择"
+          :field-names="{ label: 'name', value: 'id' }"
+          :options="typeOptions"
+          @focus="handleFocus"
+          @change="handleChange"
+        />
       </a-form-item>
-      <a-form-item label="显示排序" v-bind="validateInfos.orderNum">
-        <a-input-number v-model:value="detailInfo.orderNum" :min="0" />
+      <a-form-item label="是否建管单位" v-if="detailInfo.orgType == 'COMPANY'">
+        <a-radio-group v-model:value="detailInfo.superDept">
+          <a-radio value="1">是</a-radio>
+          <a-radio value="0">否</a-radio>
+        </a-radio-group>
       </a-form-item>
-      <a-form-item label="负责人" v-bind="validateInfos.leader">
-        <a-input v-model:value="detailInfo.leader" placeholder="请输入邮箱" />
+      <a-form-item label="关联洛斯达单位" v-if="detailInfo.superDept == '1'">
+        <a-select
+          v-model:value="detailInfo.relateLsdDeptId"
+          show-search
+          placeholder="请选择"
+          :options="lsdOptions"
+          :filterOption="filterOption"
+          :getPopupContainer="getPopupContainer"
+        />
       </a-form-item>
-      <a-form-item label="联系电话" v-bind="validateInfos.phone">
-        <a-input v-model:value="detailInfo.phone" placeholder="请输入用户名称" />
+      <a-form-item label="排序" v-bind="validateInfos.orderNum">
+        <a-input-number
+          style="width: 100%"
+          v-model:value="detailInfo.orderNum"
+          :min="0"
+          :formatter="limitNumber"
+          :parser="limitNumber"
+        />
       </a-form-item>
-      <a-form-item label="邮箱" v-bind="validateInfos.email">
-        <a-input v-model:value="detailInfo.email" placeholder="请输入用户密码" />
-      </a-form-item>
-      <a-form-item label="部门状态" v-bind="validateInfos.status">
+      <a-form-item label="状态" v-bind="validateInfos.status">
         <a-radio-group v-model:value="detailInfo.status">
           <a-radio value="0">启用</a-radio>
           <a-radio value="1">停用</a-radio>
@@ -47,15 +79,23 @@ import { reactive, ref } from 'vue'
 import { Form, message } from 'ant-design-vue'
 import { deptDetailRules } from '@/validator/setting'
 import { actionTypeEnum } from '@/enums/commonEnum'
-import { apiGetDeptDetail, apiGetDepartmentList, apiAddDept, apiUpdateDept } from '@/service/api/setting'
+import {
+  apiGetDeptDetail,
+  apiGetDepartmentTypeList,
+  apiGetDepartmentListNew,
+  apiAddDept,
+  apiUpdateDept,
+  apiGetLsdDeptData,
+} from '@/service/api/setting'
 import { findTreePath } from '@/utils/base'
+import useSelect from '@/hooks/useSelect'
 
 const props = defineProps<{
   handleRefresh: Function
   getSourceData: Function
 }>()
 
-const labelCol = { span: 4 }
+const labelCol = { span: 6 }
 
 const visible = ref<boolean>(false)
 
@@ -65,17 +105,32 @@ const handleType = ref(actionTypeEnum.ADD)
 
 const deptId = ref()
 
+const limitNumber = (input: any) => {
+  if (typeof input === 'string') {
+    return !isNaN(Number(input)) ? input.replace(/\./g, '') : 0
+  } else if (typeof input === 'number') {
+    return !isNaN(input) ? String(input).replace(/\./g, '') : 0
+  } else {
+    return 0
+  }
+}
+
+const { filterOption, getPopupContainer } = useSelect()
+
 const detailInfo = reactive({
+  orgType: 'COMPANY',
   parentId: [],
+  orgTypeId: null,
   deptName: '',
+  relateLsdDeptId: null,
   orderNum: 0,
-  leader: '',
-  phone: '',
-  email: '',
   status: '0',
+  superDept: '1',
 })
 
 const deptOptions = ref()
+const typeOptions = ref()
+const lsdOptions = ref([])
 
 const useForm = Form.useForm
 
@@ -93,6 +148,30 @@ const initModal = async (type: number, initInfo: any) => {
     await getDeptDetail(initInfo.deptId)
   }
   visible.value = true
+  await getDepartmentTypeList()
+}
+
+const radioGroupChange = async () => {
+  let emptyObj = {
+    parentId: [],
+    orgTypeId: null,
+    deptName: '',
+    relateLsdDeptId: null,
+    orderNum: 0,
+    status: '0',
+    superDept: '1',
+  }
+  Object.assign(detailInfo, emptyObj)
+  await getDepartmentList()
+  await getDepartmentTypeList()
+}
+
+const handleFocus = () => {
+  console.log('focus')
+}
+
+const handleChange = (value: string) => {
+  console.log(`selected ${value}`)
 }
 
 /**
@@ -101,17 +180,16 @@ const initModal = async (type: number, initInfo: any) => {
 const getDeptDetail = async (deptId: number) => {
   const { code, data } = await apiGetDeptDetail({ deptId })
   if (code === 20000) {
-    const { deptName, orderNum, leader, phone, email, status } = data
+    const { deptName, orderNum, orgType, status, relateLsdDeptId } = data
     // 根据最后一个节点找到各级父节点
     const parentIdArr = findTreePath(deptOptions.value, (val: any) => val.id === data.parentId, [])
     Object.assign(detailInfo, {
       parentId: parentIdArr,
       deptName,
       orderNum: parseInt(orderNum),
-      leader,
-      phone,
-      email,
+      orgType,
       status,
+      relateLsdDeptId,
     })
   }
 }
@@ -120,12 +198,49 @@ const getDeptDetail = async (deptId: number) => {
  * @desc 获取部门
  */
 const getDepartmentList = async () => {
-  const { code, data } = await apiGetDepartmentList()
+  let params = ref<any>({ orgType: '' })
+  if (detailInfo.orgType == 'COMPANY') {
+    params.value.orgType = 'COMPANY'
+  } else {
+    params.value = null
+  }
+  const { code, data } = await apiGetDepartmentListNew(params.value)
   if (code === 20000) {
     deptOptions.value = data
   }
 }
 
+/**
+ * @desc 获取洛斯达关联单位
+ */
+const getLsdDeptData = async () => {
+  let params = ref<any>({ unitName: '' })
+  if (!detailInfo.deptName) {
+    message.info('请输入单位名称')
+    return
+  }
+  params.value.unitName = detailInfo.deptName
+  const { code, data } = await apiGetLsdDeptData(params.value)
+  if (code === 20000) {
+    lsdOptions.value = data.map((item: any) => ({ label: item.deptName, value: item.relateId }))
+  }
+}
+
+/**
+ * @desc 获取公司/部门类型
+ */
+const getDepartmentTypeList = async () => {
+  let params = ref<any>({ orgType: '' })
+  if (detailInfo.orgType == 'COMPANY') {
+    params.value.orgType = 'COMPANY'
+  } else {
+    params.value.orgType = 'DEPARTMENT'
+  }
+  const { code, data } = await apiGetDepartmentTypeList(params.value)
+  if (code === 20000) {
+    typeOptions.value = data
+  }
+}
 /**
  * @desc 确认
  */
@@ -135,6 +250,7 @@ const handleConfirm = () => {
     const len = detailInfo.parentId.length
     const params = { ...detailInfo, parentId: detailInfo.parentId[len - 1] }
     if (handleType.value === actionTypeEnum.ADD) {
+      debugger
       const { code } = await apiAddDept(params)
       if (code === 20000) {
         message.success('添加部门成功')
@@ -164,12 +280,4 @@ defineExpose({
 })
 </script>
 
-<style lang="less" scoped>
-.ant-form {
-  .ant-form-item {
-    .ant-input-number {
-      width: 100%;
-    }
-  }
-}
-</style>
+<style lang="less" scoped></style>

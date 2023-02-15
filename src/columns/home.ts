@@ -186,8 +186,8 @@ export const thinkCodeLibraryColumns = [
   },
   {
     title: '创建时间',
-    key: 'createdTime',
-    dataIndex: 'createdTime',
+    key: 'createTime',
+    dataIndex: 'createTime',
   },
   {
     title: '操作',

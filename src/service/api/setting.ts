@@ -11,18 +11,19 @@ import {
   IGetMenuList,
   IAddMenuDetail,
   IGetDeptList,
-  IAddDept,
   // IGetLogsList,
   // IUpdatePassword,
 } from '../types/setting'
 
 enum Api {
+  getDepartmentListNew = '/usermanager/system/dept/org/manager/node',
   getDepartmentList = '/usermanager/system/dept/treeselect',
   getUserList = '/usermanager/system/user/list',
   modifyUserStatus = '/usermanager/system/user/changeStatus',
   handleUserDetail = '/usermanager/system/user',
   updateUser = '/usermanager/system/user/edit',
   modifyPassword = '/usermanager/system/user/resetPwd',
+  getDepartTypeList = '/usermanager/system/dept/org/type',
 
   getRoleList = '/usermanager/system/role/list',
   modifyRoleStatus = '/usermanager/system/role/changeStatus',
@@ -30,6 +31,7 @@ enum Api {
   getSelectedMenuTree = '/usermanager/system/menu/roleMenuTreeselect',
   getRoleDetail = '/usermanager/system/role',
   updateRoleDetail = '/usermanager/system/role/edit',
+  getLsdDeptData = '/ecode_grant/codeCompany/relate/lsd/dept',
 
   getMenuList = '/usermanager/system/menu/list',
   getMenuDetail = '/usermanager/system/menu',
@@ -58,6 +60,38 @@ export function apiGetDepartmentList(): Promise<any> {
   return $http.request({
     url: Api.getDepartmentList,
     method: 'GET',
+  })
+}
+
+/**
+ * @desc: 获取部门树列表(部门管理)
+ */
+export function apiGetDepartmentListNew(params: any): Promise<any> {
+  return $http.request({
+    url: Api.getDepartmentListNew,
+    method: 'GET',
+    params,
+  })
+}
+
+/**
+ * @desc: 获取公司或者部门类型
+ */
+export function apiGetDepartmentTypeList(params: any): Promise<any> {
+  return $http.request({
+    url: Api.getDepartTypeList,
+    method: 'GET',
+    params,
+  })
+}
+/**
+ * @desc: 获取洛斯达部门数据
+ */
+export function apiGetLsdDeptData(params: any): Promise<any> {
+  return $http.request({
+    url: Api.getLsdDeptData,
+    method: 'GET',
+    params,
   })
 }
 
@@ -315,7 +349,7 @@ export function apiGetDeptDetail(params: { deptId: number }) {
 /**
  * @desc 新增部门
  */
-export function apiAddDept(params: IAddDept) {
+export function apiAddDept(params: any) {
   return $http.request({
     url: Api.addDateDept,
     method: 'POST',
@@ -326,7 +360,7 @@ export function apiAddDept(params: IAddDept) {
 /**
  * @desc 更新部门
  */
-export function apiUpdateDept(params: IAddDept) {
+export function apiUpdateDept(params: any) {
   return $http.request({
     url: Api.updateDept,
     method: 'POST',

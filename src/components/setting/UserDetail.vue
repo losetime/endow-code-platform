@@ -165,8 +165,9 @@ const getDepartmentList = async () => {
  */
 const handleConfirm = () => {
   let validateField = ['nickName']
+  console.log(handleType.value, actionTypeEnum.ADD)
   if (handleType.value === actionTypeEnum.ADD) {
-    validateField.concat(['userName', 'password'])
+    validateField = validateField.concat(['userName', 'password'])
   }
   validate(validateField).then(async () => {
     const { deptId } = detailInfo

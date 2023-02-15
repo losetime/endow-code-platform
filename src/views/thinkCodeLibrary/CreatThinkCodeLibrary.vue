@@ -2,6 +2,7 @@
   <div class="item-content">
     <div class="search-temp">
       <a-form
+        class="form-style"
         labelAlign="left"
         :model="saveParam"
         :rules="rules"
@@ -10,18 +11,17 @@
         @validate="handleValidate"
         @finishFailed="handleFinishFailed"
       >
-        <a-form-item label="标题" name="title">
+        <a-form-item label="标题" name="title" class="item-padding">
           <a-input v-model:value="saveParam.title" placeholder="请输入标题" autocomplete="off" />
         </a-form-item>
-        <a-form-item label="正文" name="content">
-          <richText class="search-temp-input" ref="textInstance" v-model:value="saveParam.content" autocomplete="off" />
+        <a-form-item label="正文" name="content" class="item-padding">
+          <richText ref="textInstance" v-model:value="saveParam.content" autocomplete="off" />
         </a-form-item>
         <a-form-item label="添加附件">
           <a-upload
             v-model:file-list="fileList"
             name="files"
             :multiple="true"
-            :maxCount="9"
             :action="uploadFileUrl"
             @change="handleChange"
           >
@@ -60,8 +60,8 @@ const uploadFileUrl = ref('/ecode_grant/file/upload')
 const fileList = ref<any>([])
 
 const layout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 14 },
+  labelCol: { span: 1 },
+  wrapperCol: { span: 23 },
 }
 
 onMounted(() => {
@@ -191,15 +191,20 @@ const handleChange = (info: UploadChangeParam) => {
 
 <style lang="less" scoped>
 .item-content {
+  width: 100%;
   margin: 14px;
   padding: 14px;
   background-color: #ffffff;
 
   .search-temp {
+    width: 100%;
     padding: 32px;
     background: #fff;
     display: flex;
     align-items: center;
+    .form-style {
+      width: 100%;
+    }
   }
 
   .search-temp-label {
@@ -211,6 +216,9 @@ const handleChange = (info: UploadChangeParam) => {
   .button-item {
     display: flex;
     justify-content: flex-start;
+  }
+  .item-padding {
+    margin-right: 80px;
   }
 }
 </style>
