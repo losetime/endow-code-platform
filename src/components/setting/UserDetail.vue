@@ -9,7 +9,7 @@
   >
     <a-form :label-col="labelCol" labelAlign="left">
       <a-form-item label="用户昵称" v-bind="validateInfos.nickName">
-        <a-input v-model:value="detailInfo.nickName" placeholder="请输入用户昵称" />
+        <a-input v-model:value="detailInfo.nickName" placeholder="请输入用户昵称" allowClear />
       </a-form-item>
       <a-form-item label="归属部门" v-bind="validateInfos.deptId">
         <a-cascader
@@ -21,16 +21,23 @@
         />
       </a-form-item>
       <a-form-item label="手机号码" v-bind="validateInfos.phonenumber">
-        <a-input v-model:value="detailInfo.phonenumber" placeholder="请输入手机号码" />
+        <a-input
+          v-model:value="detailInfo.phonenumber"
+          placeholder="请输入手机号码"
+          type="tel"
+          maxlength="11"
+          @change="detailInfo.phonenumber = detailInfo.phonenumber.replace(/[^\d]/g, '')"
+          allowClear
+        />
       </a-form-item>
       <a-form-item label="邮箱" v-bind="validateInfos.email">
-        <a-input v-model:value="detailInfo.email" placeholder="请输入邮箱" />
+        <a-input v-model:value="detailInfo.email" placeholder="请输入邮箱" allowClear />
       </a-form-item>
       <a-form-item label="用户名称" v-bind="validateInfos.userName" v-if="!isEdit">
-        <a-input v-model:value="detailInfo.userName" placeholder="请输入用户名称" />
+        <a-input v-model:value="detailInfo.userName" placeholder="请输入用户名称" allowClear />
       </a-form-item>
       <a-form-item label="用户密码" v-bind="validateInfos.password" v-if="!isEdit">
-        <a-input v-model:value="detailInfo.password" placeholder="请输入用户密码" />
+        <a-input v-model:value="detailInfo.password" placeholder="请输入用户密码" allowClear />
       </a-form-item>
       <a-form-item label="用户性别" v-bind="validateInfos.sex">
         <a-select v-model:value="detailInfo.sex" placeholder="请选择性别">
@@ -72,7 +79,13 @@ import { Form, message } from 'ant-design-vue'
 import { userDetailRules } from '@/validator/setting'
 import { actionTypeEnum } from '@/enums/commonEnum'
 import { sexOptionsEnum } from '@/enums/settingEnum'
-import { apiGetUserDetail, apiGetDepartmentList, apiAddUser, apiUpdateUser } from '@/service/api/setting'
+import {
+  apiGetUserDetail,
+  apiGetDepartmentList,
+  apiAddUser,
+  apiUpdateUser,
+  apiGetRolesDropList,
+} from '@/service/api/setting'
 import { findTreePath } from '@/utils/base'
 
 const props = defineProps<{
@@ -123,6 +136,8 @@ const initModal = (type: number, initInfo: any) => {
     title.value = '编辑用户'
     userId.value = initInfo.userId as number
     getUserDetail()
+  } else {
+    getRoles()
   }
   visible.value = true
 }
@@ -133,7 +148,7 @@ const initModal = (type: number, initInfo: any) => {
 const getUserDetail = async () => {
   const { code, data } = await apiGetUserDetail({ userId: userId.value })
   if (code === 20000) {
-    const { nickName, deptId, phonenumber, email, sex, status, remark } = data.user
+    const { nickName, deptId, phonenumber, email, sex, status, remark, userName } = data.user
     statusOptions.value = data.roles
     Object.assign(detailInfo, {
       nickName,
@@ -142,6 +157,7 @@ const getUserDetail = async () => {
       sex,
       status,
       remark,
+      userName,
       roleIds: data.roleIds,
     })
     // 根据最后一个节点找到各级父节点
@@ -157,6 +173,16 @@ const getDepartmentList = async () => {
   const { code, data } = await apiGetDepartmentList()
   if (code === 20000) {
     deptOptions.value = data
+  }
+}
+
+/**
+ * 获取角色列表
+ */
+const getRoles = async () => {
+  const { code, data } = await apiGetRolesDropList()
+  if (code === 20000) {
+    statusOptions.value = data
   }
 }
 

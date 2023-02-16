@@ -32,6 +32,7 @@ enum Api {
   getRoleDetail = '/usermanager/system/role',
   updateRoleDetail = '/usermanager/system/role/edit',
   getLsdDeptData = '/ecode_grant/codeCompany/relate/lsd/dept',
+  getDropRoleList = '/usermanager/system/role/optionselect',
 
   getMenuList = '/usermanager/system/menu/list',
   getMenuDetail = '/usermanager/system/menu',
@@ -87,11 +88,10 @@ export function apiGetDepartmentTypeList(params: any): Promise<any> {
 /**
  * @desc: 获取洛斯达部门数据
  */
-export function apiGetLsdDeptData(params: any): Promise<any> {
+export function apiGetLsdDeptData(): Promise<any> {
   return $http.request({
     url: Api.getLsdDeptData,
     method: 'GET',
-    params,
   })
 }
 
@@ -181,6 +181,16 @@ export function apiGetRoleList(params: IGetRoleList) {
     url: Api.getRoleList,
     method: 'GET',
     params,
+  })
+}
+
+/**
+ * @desc 获取角色列表
+ */
+export function apiGetRolesDropList() {
+  return $http.request({
+    url: Api.getDropRoleList,
+    method: 'GET',
   })
 }
 

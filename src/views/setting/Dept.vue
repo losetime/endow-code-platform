@@ -17,7 +17,9 @@
         <template #slotOne="{ record }">{{ parseDicts(record.status) }}</template>
         <template #action="{ record }">
           <a-space>
-            <a-button type="link" size="small" @click="handleEdit(record)">修改</a-button>
+            <a-button :disabled="record.parentId === 0" type="link" size="small" @click="handleEdit(record)"
+              >修改</a-button
+            >
             <a-button type="link" size="small" danger @click="handleDel(record.deptId)">删除</a-button>
           </a-space>
         </template>

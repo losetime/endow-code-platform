@@ -8,7 +8,11 @@
   >
     <a-form :label-col="labelCol" labelAlign="right">
       <a-form-item label="部门/公司">
-        <a-radio-group v-model:value="detailInfo.orgType" @change="radioGroupChange">
+        <a-radio-group
+          :disabled="handleType === actionTypeEnum.EDIT"
+          v-model:value="detailInfo.orgType"
+          @change="radioGroupChange"
+        >
           <a-radio value="COMPANY">公司</a-radio>
           <a-radio value="DEPARTMENT">部门</a-radio>
         </a-radio-group>
@@ -17,10 +21,12 @@
         <a-input
           v-model:value="detailInfo.deptName"
           :placeholder="detailInfo.orgType == 'COMPANY' ? '请输入公司名称' : '请输入部门名称'"
-          @change="getLsdDeptData"
         />
       </a-form-item>
-      <a-form-item :label="detailInfo.orgType == 'COMPANY' ? '上级公司' : '上级部门'" v-bind="validateInfos.parentId">
+      <a-form-item
+        :label="detailInfo.orgType == 'COMPANY' ? '上级公司' : '上级公司/部门'"
+        v-bind="validateInfos.parentId"
+      >
         <a-cascader
           v-model:value="detailInfo.parentId"
           :field-names="{ value: 'id' }"
@@ -33,7 +39,6 @@
         <a-select
           v-model:value="detailInfo.orgTypeId"
           placeholder="请选择"
-          :field-names="{ label: 'name', value: 'id' }"
           :options="typeOptions"
           @focus="handleFocus"
           @change="handleChange"
@@ -128,7 +133,7 @@ const detailInfo = reactive({
   superDept: '1',
 })
 
-const deptOptions = ref()
+const deptOptions = ref<any>()
 const typeOptions = ref()
 const lsdOptions = ref([])
 
@@ -146,9 +151,11 @@ const initModal = async (type: number, initInfo: any) => {
     title.value = '编辑用户'
     deptId.value = initInfo.deptId
     await getDeptDetail(initInfo.deptId)
+    await getDepartmentList()
   }
-  visible.value = true
   await getDepartmentTypeList()
+  await getLsdDeptData()
+  visible.value = true
 }
 
 const radioGroupChange = async () => {
@@ -180,14 +187,16 @@ const handleChange = (value: string) => {
 const getDeptDetail = async (deptId: number) => {
   const { code, data } = await apiGetDeptDetail({ deptId })
   if (code === 20000) {
-    const { deptName, orderNum, orgType, status, relateLsdDeptId } = data
-    // 根据最后一个节点找到各级父节点
+    const { deptName, orderNum, orgType, status, relateLsdDeptId, orgTypeId } = data
+    if (data.parentId == 0) {
+    }
     const parentIdArr = findTreePath(deptOptions.value, (val: any) => val.id === data.parentId, [])
     Object.assign(detailInfo, {
       parentId: parentIdArr,
       deptName,
       orderNum: parseInt(orderNum),
       orgType,
+      orgTypeId,
       status,
       relateLsdDeptId,
     })
@@ -202,7 +211,7 @@ const getDepartmentList = async () => {
   if (detailInfo.orgType == 'COMPANY') {
     params.value.orgType = 'COMPANY'
   } else {
-    params.value = null
+    params.value.orgType = 'DEPARTMENT'
   }
   const { code, data } = await apiGetDepartmentListNew(params.value)
   if (code === 20000) {
@@ -214,13 +223,7 @@ const getDepartmentList = async () => {
  * @desc 获取洛斯达关联单位
  */
 const getLsdDeptData = async () => {
-  let params = ref<any>({ unitName: '' })
-  if (!detailInfo.deptName) {
-    message.info('请输入单位名称')
-    return
-  }
-  params.value.unitName = detailInfo.deptName
-  const { code, data } = await apiGetLsdDeptData(params.value)
+  const { code, data } = await apiGetLsdDeptData()
   if (code === 20000) {
     lsdOptions.value = data.map((item: any) => ({ label: item.deptName, value: item.relateId }))
   }
@@ -238,7 +241,7 @@ const getDepartmentTypeList = async () => {
   }
   const { code, data } = await apiGetDepartmentTypeList(params.value)
   if (code === 20000) {
-    typeOptions.value = data
+    typeOptions.value = data.map((item: any) => ({ label: item.name, value: item.id }))
   }
 }
 /**
@@ -250,7 +253,6 @@ const handleConfirm = () => {
     const len = detailInfo.parentId.length
     const params = { ...detailInfo, parentId: detailInfo.parentId[len - 1] }
     if (handleType.value === actionTypeEnum.ADD) {
-      debugger
       const { code } = await apiAddDept(params)
       if (code === 20000) {
         message.success('添加部门成功')

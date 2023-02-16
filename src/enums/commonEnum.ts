@@ -2,9 +2,9 @@
  * @desc 操作类型枚举
  */
 export enum actionTypeEnum {
-  ADD = 0, // 添加
-  EDIT = 1, // 编辑
-  CHECK = 2, // 查看
+  ADD = 0,
+  EDIT = 1,
+  CHECK = 2,
 }
 
 export const colorsEnum = [
