@@ -50,7 +50,7 @@
           <a-radio value="0">否</a-radio>
         </a-radio-group>
       </a-form-item>
-      <a-form-item label="关联洛斯达单位" v-if="detailInfo.superDept == '1'">
+      <a-form-item label="关联洛斯达单位" v-if="detailInfo.orgType == 'COMPANY' && detailInfo.superDept == '1'">
         <a-select
           v-model:value="detailInfo.relateLsdDeptId"
           show-search
@@ -151,7 +151,6 @@ const initModal = async (type: number, initInfo: any) => {
     title.value = '编辑用户'
     deptId.value = initInfo.deptId
     await getDeptDetail(initInfo.deptId)
-    await getDepartmentList()
   }
   await getDepartmentTypeList()
   await getLsdDeptData()
@@ -187,9 +186,11 @@ const handleChange = (value: string) => {
 const getDeptDetail = async (deptId: number) => {
   const { code, data } = await apiGetDeptDetail({ deptId })
   if (code === 20000) {
-    const { deptName, orderNum, orgType, status, relateLsdDeptId, orgTypeId } = data
-    if (data.parentId == 0) {
+    detailInfo.orgType = data.orgType
+    if (data.orgType === 'DEPARTMENT') {
+      await getDepartmentList()
     }
+    const { deptName, orderNum, orgType, status, relateLsdDeptId, orgTypeId } = data
     const parentIdArr = findTreePath(deptOptions.value, (val: any) => val.id === data.parentId, [])
     Object.assign(detailInfo, {
       parentId: parentIdArr,

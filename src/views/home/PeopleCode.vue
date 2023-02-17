@@ -19,14 +19,14 @@
         :params="searchParams"
         ref="tableInstance"
       >
-        <!-- <template #slotOne="{ record }">
+        <template #slotOne="{ record }">
           <span :style="{ color: formatQRcodeColor(record.codeColor) }">{{ formatQRcodeText(record.codeColor) }}</span>
         </template>
         <template #action="{ record }">
           <a-space>
             <a-button type="link" size="small" @click="checkQRCode(record)">查看二维码</a-button>
           </a-space>
-        </template> -->
+        </template>
       </ym-table>
     </div>
     <people-code-detail ref="detailInstance" />
@@ -39,7 +39,7 @@ import YmTable from '@/components/common/YmTable.vue'
 import PeopleCodeDetail from '@/components/home/PeopleCodeDetail.vue'
 import { apiGetPeopleCodeList } from '@/service/api/home'
 import { PeopleCodeColumns } from '@/columns/home'
-// import { formatQRcodeText, formatQRcodeColor } from '@/enums/homeEnum'
+import { formatQRcodeText, formatQRcodeColor } from '@/enums/homeEnum'
 import { createQRCode, downloadQRCode } from '@/utils/base'
 
 /**
@@ -85,9 +85,9 @@ const detailInstance = ref()
 /**
  * @desc 查看二维码
  */
-// const checkQRCode = (record: any) => {
-//   detailInstance.value.initModal(record)
-// }
+const checkQRCode = (record: any) => {
+  detailInstance.value.initModal(record)
+}
 </script>
 
 <style lang="less" scoped>
