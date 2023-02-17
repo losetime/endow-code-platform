@@ -51,7 +51,7 @@
         </a-radio-group>
       </a-form-item>
       <a-form-item label="关联洛斯达单位" v-if="detailInfo.orgType == 'COMPANY' && detailInfo.superDept == '1'">
-        <a-select
+        <a-cascader
           v-model:value="detailInfo.relateLsdDeptId"
           show-search
           placeholder="请选择"
@@ -104,7 +104,7 @@ const labelCol = { span: 6 }
 
 const visible = ref<boolean>(false)
 
-const title = ref<string>('添加用户')
+const title = ref<string>('添加组织')
 
 const handleType = ref(actionTypeEnum.ADD)
 
