@@ -86,8 +86,8 @@ export const ProjectCodeColumns = [
   },
   {
     title: '工程编码',
-    key: 'projectCode',
-    dataIndex: 'projectCode',
+    key: 'singleProjectCode',
+    dataIndex: 'singleProjectCode',
   },
   {
     title: '工程类型',
