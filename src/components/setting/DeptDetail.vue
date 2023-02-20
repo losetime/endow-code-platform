@@ -36,13 +36,7 @@
         />
       </a-form-item>
       <a-form-item :label="detailInfo.orgType == 'COMPANY' ? '公司类型' : '部门类型'" v-bind="validateInfos.orgTypeId">
-        <a-select
-          v-model:value="detailInfo.orgTypeId"
-          placeholder="请选择"
-          :options="typeOptions"
-          @focus="handleFocus"
-          @change="handleChange"
-        />
+        <a-select v-model:value="detailInfo.orgTypeId" placeholder="请选择" :options="typeOptions" />
       </a-form-item>
       <a-form-item label="是否建管单位" v-if="detailInfo.orgType == 'COMPANY'">
         <a-radio-group v-model:value="detailInfo.superDept">
@@ -51,7 +45,7 @@
         </a-radio-group>
       </a-form-item>
       <a-form-item label="关联洛斯达单位" v-if="detailInfo.orgType == 'COMPANY' && detailInfo.superDept == '1'">
-        <a-cascader
+        <a-select
           v-model:value="detailInfo.relateLsdDeptId"
           show-search
           placeholder="请选择"
@@ -135,7 +129,7 @@ const detailInfo = reactive({
 
 const deptOptions = ref<any>()
 const typeOptions = ref()
-const lsdOptions = ref([])
+const lsdOptions = ref()
 
 const useForm = Form.useForm
 
@@ -145,6 +139,7 @@ const { validate, validateInfos, resetFields } = useForm(detailInfo, deptDetailR
  * @desc 初始化对话框
  */
 const initModal = async (type: number, initInfo: any) => {
+  visible.value = true
   handleType.value = type
   await getDepartmentList()
   if (type === actionTypeEnum.EDIT) {
@@ -154,7 +149,6 @@ const initModal = async (type: number, initInfo: any) => {
   }
   await getDepartmentTypeList()
   await getLsdDeptData()
-  visible.value = true
 }
 
 const radioGroupChange = async () => {
@@ -170,14 +164,6 @@ const radioGroupChange = async () => {
   Object.assign(detailInfo, emptyObj)
   await getDepartmentList()
   await getDepartmentTypeList()
-}
-
-const handleFocus = () => {
-  console.log('focus')
-}
-
-const handleChange = (value: string) => {
-  console.log(`selected ${value}`)
 }
 
 /**
@@ -201,7 +187,6 @@ const getDeptDetail = async (deptId: number) => {
       status,
       relateLsdDeptId,
     })
-    debugger
   }
 }
 
