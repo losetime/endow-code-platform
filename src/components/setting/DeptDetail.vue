@@ -201,6 +201,7 @@ const getDeptDetail = async (deptId: number) => {
       status,
       relateLsdDeptId,
     })
+    debugger
   }
 }
 

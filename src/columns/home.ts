@@ -273,7 +273,7 @@ export const CodeConvertColumns = [
   },
   {
     title: '发布状态',
-    customRender: ({ record }: { record: any }) => (record.status === '0' ? '已发布' : '未发布'),
+    customRender: ({ record }: { record: any }) => (record.status === '0' ? '未发布' : '已发布'),
   },
   {
     title: '生效状态',
