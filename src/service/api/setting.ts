@@ -32,6 +32,7 @@ enum Api {
   getRoleDetail = '/usermanager/system/role',
   updateRoleDetail = '/usermanager/system/role/edit',
   getLsdDeptData = '/ecode_grant/codeCompany/relate/lsd/dept',
+  getRelateFkJiUnitData = '/ecode_grant/codeCompany/plan_jg/dropdown',
   getDropRoleList = '/usermanager/system/role/optionselect',
 
   getMenuList = '/usermanager/system/menu/list',
@@ -91,6 +92,16 @@ export function apiGetDepartmentTypeList(params: any): Promise<any> {
 export function apiGetLsdDeptData(): Promise<any> {
   return $http.request({
     url: Api.getLsdDeptData,
+    method: 'GET',
+  })
+}
+
+/**
+ * @desc: 获取关联风控数据
+ */
+export function apiGetRelateFkJiUnitData(): Promise<any> {
+  return $http.request({
+    url: Api.getRelateFkJiUnitData,
     method: 'GET',
   })
 }

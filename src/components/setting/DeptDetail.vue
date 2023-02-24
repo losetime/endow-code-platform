@@ -44,12 +44,26 @@
           <a-radio value="0">否</a-radio>
         </a-radio-group>
       </a-form-item>
-      <a-form-item label="关联洛斯达单位" v-if="detailInfo.orgType == 'COMPANY' && detailInfo.superDept == '1'">
+      <a-form-item
+        label="关联洛斯达单位"
+        v-if="detailInfo.orgType == 'COMPANY' && detailInfo.superDept == '1'"
+        v-bind="validateInfos.relateLsdDeptId"
+      >
         <a-select
           v-model:value="detailInfo.relateLsdDeptId"
           show-search
           placeholder="请选择"
           :options="lsdOptions"
+          :filterOption="filterOption"
+          :getPopupContainer="getPopupContainer"
+        />
+      </a-form-item>
+      <a-form-item label="关联风控单位" v-if="detailInfo.orgType == 'COMPANY' && detailInfo.superDept == '1'">
+        <a-select
+          v-model:value="detailInfo.relateFkJiUnitId"
+          show-search
+          placeholder="请选择"
+          :options="relateFkJiUnitOptions"
           :filterOption="filterOption"
           :getPopupContainer="getPopupContainer"
         />
@@ -85,6 +99,7 @@ import {
   apiAddDept,
   apiUpdateDept,
   apiGetLsdDeptData,
+  apiGetRelateFkJiUnitData,
 } from '@/service/api/setting'
 import { findTreePath } from '@/utils/base'
 import useSelect from '@/hooks/useSelect'
@@ -125,11 +140,13 @@ const detailInfo = reactive({
   orderNum: 0,
   status: '0',
   superDept: '1',
+  relateFkJiUnitId: null,
 })
 
 const deptOptions = ref<any>()
 const typeOptions = ref()
 const lsdOptions = ref()
+const relateFkJiUnitOptions = ref()
 
 const useForm = Form.useForm
 
@@ -149,6 +166,7 @@ const initModal = async (type: number, initInfo: any) => {
   }
   await getDepartmentTypeList()
   await getLsdDeptData()
+  await getRelateFkJiUnitData()
 }
 
 const radioGroupChange = async () => {
@@ -176,7 +194,7 @@ const getDeptDetail = async (deptId: number) => {
     if (data.orgType === 'DEPARTMENT') {
       await getDepartmentList()
     }
-    const { deptName, orderNum, orgType, status, relateLsdDeptId, orgTypeId } = data
+    const { deptName, orderNum, orgType, status, relateLsdDeptId, orgTypeId, relateFkJiUnitId } = data
     const parentIdArr = findTreePath(deptOptions.value, (val: any) => val.id === data.parentId, [])
     Object.assign(detailInfo, {
       parentId: parentIdArr,
@@ -186,6 +204,7 @@ const getDeptDetail = async (deptId: number) => {
       orgTypeId,
       status,
       relateLsdDeptId,
+      relateFkJiUnitId,
     })
   }
 }
@@ -213,6 +232,17 @@ const getLsdDeptData = async () => {
   const { code, data } = await apiGetLsdDeptData()
   if (code === 20000) {
     lsdOptions.value = data.map((item: any) => ({ label: item.deptName, value: item.relateId }))
+  }
+}
+
+//apiGetRelateFkJiUnitData
+/**
+ * @desc 获取风控关联单位
+ */
+const getRelateFkJiUnitData = async () => {
+  const { code, data } = await apiGetRelateFkJiUnitData()
+  if (code === 20000) {
+    relateFkJiUnitOptions.value = data.map((item: any) => ({ label: item.name, value: item.code }))
   }
 }
 

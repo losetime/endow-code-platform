@@ -48,6 +48,7 @@ export const deptDetailRules = reactive({
   deptName: [{ required: true, message: '部门名称不能为空', trigger: 'change' }],
   orderNum: [{ required: true, type: 'number', message: '排序不能为空', trigger: 'change' }],
   orgTypeId: [{ required: true, message: '公司/部门类型不能为空', trigger: 'change' }],
+  relateLsdDeptId: [{ required: true, message: '洛斯达监理单位不能为空', trigger: 'change' }],
 })
 
 export const saftyCardConfigAddRules = reactive({
