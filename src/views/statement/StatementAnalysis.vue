@@ -3,44 +3,73 @@
     <div class="handle-wrap">
       <a-tabs v-model:activeKey="activeKey" :tab-position="tabPosition" :tabBarGutter="20" size="small">
         <a-tab-pane class="item-tab" key="1" tab="赋码分析">
-          <a-button type="primary">导出报表</a-button>
+          <a-button type="primary" @click="HandleExport">导出报表</a-button>
+          <a-button v-if="tempDeptIds.length > 0" type="primary" style="margin-left: 15px" @click="lastCompanyList"
+            >返回上级</a-button
+          >
           <div class="item-statement">
             <ym-table
-              rowKey="id"
-              :columns="columns"
-              :getTableList="apiGetUserInfo"
-              :row-selection="false"
               ref="tableTaggingInstance"
+              rowKey="id"
+              v-if="!haveProjectInfo"
+              :columns="columns"
+              :getTableList="getCodingAnalysisData"
+              :row-selection="false"
+              :params="codingAnalysisParams"
             >
-              <template #bodyCell="{ column, text, index }">
-                <template v-if="column.dataIndex === 'constructionUnit'">
-                  <a v-if="index > 0">{{ text }}</a>
-                  <span v-else>{{ text }}</span>
-                </template>
+              <template #slotOne="{ index, record }">
+                <a v-if="index > 0">{{ record.label }}</a>
+                <span v-else>{{ record.label }}</span>
               </template>
             </ym-table>
+
+            <ym-table
+              rowKey="id"
+              v-else
+              :columns="columnsProject"
+              :getTableList="getCodingAnalysisProjectData"
+              :row-selection="false"
+              :params="codingAnalysisParams"
+              ref="tableTaggingProjectInstance"
+            />
           </div>
         </a-tab-pane>
         <a-tab-pane class="item-tab" key="2" tab="日志分析">
-          <a-button type="primary">导出报表</a-button>
+          <a-button type="primary" @click="HandleLogExport">导出报表</a-button>
+          <a-button
+            v-if="tempLogDeptIds.length > 0"
+            type="primary"
+            style="margin-left: 15px"
+            @click="lastLogCompanyList"
+            >返回上级</a-button
+          >
           <div class="item-statement">
-            <a-button class="btn-date" type="primary">本周</a-button>
-            <a-button class="btn-date" type="primary">本月</a-button>
+            <a-button class="btn-date" type="primary" @click="changeLogParam(0)">本周</a-button>
+            <a-button class="btn-date" type="primary" @click="changeLogParam(1)">本月</a-button>
             <a-range-picker class="btn-date" v-model:value="dateArea" @change="onChange" />
             <ym-table
+              ref="tableLogTaggingInstance"
               rowKey="id"
+              v-if="!haveLogProjectInfo"
               :columns="columnLog"
-              :getTableList="apiGetUserInfo"
+              :getTableList="getLogAnalysisData"
               :row-selection="false"
-              ref="tableInstance"
+              :params="logListParam"
             >
-              <template #bodyCell="{ column, text, index }">
-                <template v-if="column.dataIndex === 'supervisoryUnit'">
-                  <a v-if="index > 0">{{ text }}</a>
-                  <span v-else>{{ text }}</span>
-                </template>
+              <template #slotOne="{ index, record }">
+                <a v-if="index > 0">{{ record.label }}</a>
+                <span v-else>{{ record.label }}</span>
               </template>
             </ym-table>
+            <ym-table
+              ref="tableLogTaggingProjectInstance"
+              rowKey="id"
+              v-else
+              :columns="columnLogProject"
+              :getTableList="getLogAnalysisProjectData"
+              :row-selection="false"
+              :params="logListParam"
+            />
           </div>
         </a-tab-pane>
         <a-tab-pane class="item-tab" key="3" tab="监督管理分析">
@@ -52,12 +81,12 @@
             <ym-table
               rowKey="id"
               :columns="columnSupervision"
-              :getTableList="apiGetUserInfo"
+              :getTableList="getCodingAnalysisProjectData"
               :row-selection="false"
               ref="tableSupervisionInstance"
             >
               <template #bodyCell="{ column, text, index }">
-                <template v-if="column.dataIndex === 'supervisoryUnit'">
+                <template v-if="column.dataIndex === 'label'">
                   <a v-if="index > 0">{{ text }}</a>
                   <span v-else>{{ text }}</span>
                 </template>
@@ -75,7 +104,7 @@
             <ym-table
               rowKey="id"
               :columns="columnRisk"
-              :getTableList="apiGetUserInfo"
+              :getTableList="apiGetCodingAnalysisList"
               :row-selection="false"
               ref="tableRiskInstance"
             >
@@ -94,53 +123,282 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import YmTable from '@/components/common/YmTable.vue'
-import { apiGetUserInfo } from '@/service/api/statementAnalysis'
-// import { message } from 'ant-design-vue'
+import {
+  apiGetCodingAnalysisList,
+  apiPostExportCoddingAnalysisList,
+  apiGetLogAnalysisList,
+  apiPostExportLogAnalysisList,
+} from '@/service/api/statementAnalysis'
+import { message } from 'ant-design-vue'
 import { Moment } from 'moment'
 
+//tab页相关
 const tabPosition = ref('left')
 const activeKey = ref('1')
+//--------赋码分析------------
+//赋码分析引用
 const tableTaggingInstance = ref()
-const tableInstance = ref()
+const tableTaggingProjectInstance = ref()
+const codingAnalysisParams = ref<any>({
+  deptId: '',
+})
+
+const haveProjectInfo = ref(false)
+//用来记录赋码分析列表数据
+const tempDataList = ref<any>([])
+//用来记录上一级的deptId
+const tempDeptIds = ref<any>([])
+//导出报表使用
+const tempExportList = ref<any>([])
+
+//--------日志分析------------
+//日志报表请求参数
+const tableLogTaggingInstance = ref()
+const tableLogTaggingProjectInstance = ref()
+const haveLogProjectInfo = ref(false)
+//用来记录上一级的deptId
+const tempLogDeptIds = ref<any>([])
+//导出报表使用
+const tempLogExportList = ref<any>([])
+//用来记录日志分析列表数据
+const tempLogDataList = ref<any>([])
+const logListParam = ref<any>({
+  deptId: '',
+  endTime: '',
+  startTime: '',
+  thisMonth: false,
+  thisWeek: false,
+})
+
 const tableSupervisionInstance = ref()
 const tableRiskInstance = ref()
 
-const dateArea = ref<Moment[]>()
+const dateArea = ref<Moment[]>([])
+
 function rowClick(record: any, index: any) {
   return {
-    onClick: (event: any) => {
-      console.log(record.tablename, index, event, '666')
-      //TODO 添加事件
+    onClick: () => {
+      if (index > 0) {
+        codingAnalysisParams.value.deptId = record.id
+        if (tempDeptIds.value.length == 0 || tempDeptIds.value.indexOf(tempDataList.value[index].parentId) == -1) {
+          tempDeptIds.value.push(tempDataList.value[index].parentId)
+        }
+        if (record.childrenColumnName == null || record.childrenColumnName.length == 0) {
+          if (record.singleProjects == null || record.singleProjects.length == 0) {
+            message.info('该单位下没有工程信息')
+            tempDeptIds.value = tempDeptIds.value.slice(0, tempDeptIds.value.length - 1)
+            return
+          }
+          haveProjectInfo.value = true
+          return
+        }
+
+        tableTaggingInstance.value.handleReacquire()
+      }
     },
   }
 }
 
-// /**
-//  * @desc 列表搜索
-//  */
-// const handleReacquire = (page?: number) => {
-//   tableInstance.value.handleReacquire(page)
-// }
+const lastCompanyList = () => {
+  if (haveProjectInfo.value) {
+    haveProjectInfo.value = false
+  }
+  codingAnalysisParams.value.deptId = tempDeptIds.value[tempDeptIds.value.length - 1]
+  if (tableTaggingInstance.value !== null) tableTaggingInstance.value.handleReacquire()
+  tempDeptIds.value = tempDeptIds.value.slice(0, tempDeptIds.value.length - 1)
+}
 
-// const onDateChange = async (dateArea: RangeValue) => {
-//   const { code } = await apiGetInfoByDateArea({ startDate: dateArea[0]?.toString, endDate: dateArea[1]?.toString })
-//   if (code === 20000) {
-//     message.success('删除成功')
-//     handleReacquire()
-//   }
-// }
+const getCodingAnalysisData = async (params: any) => {
+  const { code, data } = await apiGetCodingAnalysisList(params)
+  if (code === 20000) {
+    tempExportList.value = data
+    return new Promise((resolve: any) => {
+      tempDataList.value = data.map((item: any, i: number) => ({
+        key: i,
+        id: item.id,
+        parentId: item.parentId,
+        label: item.label,
+        companyRedCodeColorCount: item.otherInfo.companyRedCodeColorCount,
+        companyYellowCodeColorCount: item.otherInfo.companyYellowCodeColorCount,
+        companyGreenCodeColorCount: item.otherInfo.companyGreenCodeColorCount,
+        employeeRedCodeColorCount: item.otherInfo.employeeRedCodeColorCount,
+        employeeYellowCodeColorCount: item.otherInfo.employeeYellowCodeColorCount,
+        employeeGreenCodeColorCount: item.otherInfo.employeeGreenCodeColorCount,
+        projectRedCodeColorCount: item.otherInfo.projectRedCodeColorCount,
+        projectYellowCodeColorCount: item.otherInfo.projectYellowCodeColorCount,
+        projectGreenCodeColorCount: item.otherInfo.projectGreenCodeColorCount,
+        childrenColumnName: item.children,
+        singleProjects: item.otherInfo.singleProjects,
+      }))
+      resolve({
+        code: 20000,
+        data: tempDataList.value,
+      })
+    })
+  }
+}
+
+const getCodingAnalysisProjectData = async (params: any) => {
+  const { code, data } = await apiGetCodingAnalysisList(params)
+  if (code === 20000) {
+    tempExportList.value = data
+    return new Promise((resolve: any) => {
+      tempDataList.value = data[0].otherInfo.singleProjects.map((item: any, index: number) => ({
+        key: index,
+        codeColor: item.codeColor,
+        companyGreenCodeColorCount: item.companyGreenCodeColorCount,
+        companyRedCodeColorCount: item.companyRedCodeColorCount,
+        companyYellowCodeColorCount: item.companyYellowCodeColorCount,
+        employeeGreenCodeColorCount: item.employeeGreenCodeColorCount,
+        employeeRedCodeColorCount: item.employeeRedCodeColorCount,
+        employeeYellowCodeColorCount: item.employeeYellowCodeColorCount,
+        name: item.name,
+      }))
+      resolve({
+        code: 20000,
+        data: tempDataList.value,
+      })
+    })
+  }
+}
+
+const HandleExport = async () => {
+  let exportParma = {
+    deptId: codingAnalysisParams.value.deptId,
+    reportData: tempExportList.value,
+  }
+  if (tempExportList.value.length == 0) {
+    message.info('暂无报表需要导出')
+    return
+  }
+  await apiPostExportCoddingAnalysisList(exportParma)
+}
+
+//---------------------日志报表---------------------
+//改变报表查询参数方法  0：本周 1：本月
+const changeLogParam = (flag: number) => {
+  if (flag === 0) {
+    logListParam.value.thisWeek = true
+    logListParam.value.thisMonth = false
+  } else {
+    logListParam.value.thisWeek = false
+    logListParam.value.thisMonth = true
+  }
+  tableLogTaggingInstance.value.handleReacquire()
+}
+
+function logRowClick(record: any, index: any) {
+  return {
+    onClick: () => {
+      if (index > 0) {
+        logListParam.value.deptId = record.id
+        if (
+          tempLogDeptIds.value.length == 0 ||
+          tempLogDeptIds.value.indexOf(tempLogDataList.value[index].parentId) == -1
+        ) {
+          tempLogDeptIds.value.push(tempLogDataList.value[index].parentId)
+        }
+        if (record.childrenColumnName == null || record.childrenColumnName.length == 0) {
+          if (record.singleProjects == null || record.singleProjects.length == 0) {
+            message.info('该单位下没有工程信息')
+            tempLogDeptIds.value = tempLogDeptIds.value.slice(0, tempLogDeptIds.value.length - 1)
+            return
+          }
+          haveLogProjectInfo.value = true
+          // tableTaggingProjectInstance.value.handleReacquire
+          return
+        }
+
+        tableLogTaggingInstance.value.handleReacquire()
+      }
+    },
+  }
+}
+
+const lastLogCompanyList = () => {
+  if (haveLogProjectInfo.value) {
+    haveLogProjectInfo.value = false
+  }
+  logListParam.value.deptId = tempLogDeptIds.value[tempLogDeptIds.value.length - 1]
+  if (tableLogTaggingInstance.value !== null) tableLogTaggingInstance.value.handleReacquire()
+  tempLogDeptIds.value = tempLogDeptIds.value.slice(0, tempLogDeptIds.value.length - 1)
+}
+
+const getLogAnalysisData = async (params: any) => {
+  const { code, data } = await apiGetLogAnalysisList(params)
+  if (code === 20000) {
+    tempLogExportList.value = data
+    return new Promise((resolve: any) => {
+      tempLogDataList.value = data.map((item: any, i: number) => ({
+        key: i,
+        id: item.id,
+        parentId: item.parentId,
+        label: item.label,
+        planCount: item.otherInfo.planCount,
+        sgWorkLogCount: item.otherInfo.sgWorkLogCount,
+        jlWorkLogCount: item.otherInfo.jlWorkLogCount,
+        singleProjects: item.otherInfo.singleProjects,
+        childrenColumnName: item.children,
+      }))
+      resolve({
+        code: 20000,
+        data: tempLogDataList.value,
+      })
+    })
+  }
+}
+
+const getLogAnalysisProjectData = async (params: any) => {
+  const { code, data } = await apiGetLogAnalysisList(params)
+  if (code === 20000) {
+    tempLogExportList.value = data
+    return new Promise((resolve: any) => {
+      tempLogDataList.value = data[0].otherInfo.singleProjects.map((item: any, index: number) => ({
+        key: index,
+        name: item.name,
+        planCount: item.planCount,
+        sgWorkLogCount: item.sgWorkLogCount,
+        jlWorkLogCount: item.jlWorkLogCount,
+      }))
+      resolve({
+        code: 20000,
+        data: tempLogDataList.value,
+      })
+    })
+  }
+}
+
+const HandleLogExport = async () => {
+  let exportParma = {
+    deptId: logListParam.value.deptId,
+    reportData: tempLogExportList.value,
+  }
+  if (tempLogExportList.value.length == 0) {
+    message.info('暂无报表需要导出')
+    return
+  }
+  await apiPostExportLogAnalysisList(exportParma)
+}
+
+onMounted(() => {
+  // getCodingAnalysisData(codingAnalysisParams.value.deptId)
+})
 
 const onChange = (date: any, dateString: any) => {
   console.log('date', dateString)
+  logListParam.value.startTime = dateString[0]
+  logListParam.value.endTime = dateString[1]
+  if (tableLogTaggingInstance.value != null) tableLogTaggingInstance.value.handleReacquire()
+  if (tableLogTaggingProjectInstance.value != null) tableLogTaggingProjectInstance.value.handleReacquire()
 }
 
 const columns = [
   {
     title: '建管单位',
-    dataIndex: 'constructionUnit',
-    key: 'operation',
+    dataIndex: 'label',
+    key: 'slotOne',
     width: 100,
     fixed: 'left',
     align: 'center',
@@ -153,22 +411,22 @@ const columns = [
     children: [
       {
         title: '绿码',
-        dataIndex: 'projectGreen',
-        key: 'projectGreen',
+        dataIndex: 'projectGreenCodeColorCount',
+        key: 'projectGreenCodeColorCount',
         align: 'center',
         width: 50,
       },
       {
         title: '黄码',
-        dataIndex: 'projectOrange',
-        key: 'projectOrange',
+        dataIndex: 'projectYellowCodeColorCount',
+        key: 'projectYellowCodeColorCount',
         align: 'center',
         width: 50,
       },
       {
         title: '红码',
-        dataIndex: 'projectRed',
-        key: 'projectRed',
+        dataIndex: 'projectRedCodeColorCount',
+        key: 'projectRedCodeColorCount',
         align: 'center',
         width: 50,
       },
@@ -179,22 +437,22 @@ const columns = [
     children: [
       {
         title: '绿码',
-        dataIndex: 'enterpriseGreen',
-        key: 'enterpriseGreen',
+        dataIndex: 'companyGreenCodeColorCount',
+        key: 'companyGreenCodeColorCount',
         align: 'center',
         width: 50,
       },
       {
         title: '黄码',
-        dataIndex: 'enterpriseOrange',
-        key: 'enterpriseOrange',
+        dataIndex: 'companyYellowCodeColorCount',
+        key: 'companyYellowCodeColorCount',
         align: 'center',
         width: 50,
       },
       {
         title: '红码',
-        dataIndex: 'enterpriseRed',
-        key: 'enterpriseRed',
+        dataIndex: 'companyRedCodeColorCount',
+        key: 'companyRedCodeColorCount',
         align: 'center',
         width: 50,
       },
@@ -205,22 +463,22 @@ const columns = [
     children: [
       {
         title: '绿码',
-        dataIndex: 'personGreen',
-        key: 'personGreen',
+        dataIndex: 'employeeGreenCodeColorCount',
+        key: 'employeeGreenCodeColorCount',
         align: 'center',
         width: 50,
       },
       {
         title: '黄码',
-        dataIndex: 'personOrange',
-        key: 'personOrange',
+        dataIndex: 'employeeYellowCodeColorCount',
+        key: 'employeeYellowCodeColorCount',
         align: 'center',
         width: 50,
       },
       {
         title: '红码',
-        dataIndex: 'personRed',
-        key: 'personRed',
+        dataIndex: 'employeeRedCodeColorCount',
+        key: 'employeeRedCodeColorCount',
         align: 'center',
         width: 50,
       },
@@ -228,111 +486,148 @@ const columns = [
   },
 ]
 
-// const columnProject = [
-//   {
-//     title: '工程名称',
-//     dataIndex: 'projectName',
-//     key: 'projectName',
-//     width: 100,
-//     fixed: 'left',
-//     align: 'center',
-//     customCell: rowClick,
-//     ellipsis: true,
-//   },
-//   {
-//     title: '码类型',
-//     dataIndex: 'codeType',
-//     key: 'codeType',
-//     width: 100,
-//     fixed: 'left',
-//     align: 'center',
-//     ellipsis: true,
-//   },
-//   {
-//     title: '施工企业码',
-//     children: [
-//       {
-//         title: '绿码',
-//         dataIndex: 'buildCompanyGreen',
-//         key: 'buildCompanyGreen',
-//         align: 'center',
-//         width: 50,
-//       },
-//       {
-//         title: '黄码',
-//         dataIndex: 'buildCompanyOrange',
-//         key: 'buildCompanyOrange',
-//         align: 'center',
-//         width: 50,
-//       },
-//       {
-//         title: '红码',
-//         dataIndex: 'buildCompanyRed',
-//         key: 'buildCompanyRed',
-//         align: 'center',
-//         width: 50,
-//       },
-//     ],
-//   },
-//   {
-//     title: '施工人员码',
-//     children: [
-//       {
-//         title: '绿码',
-//         dataIndex: 'buildPersonGreen',
-//         key: 'buildPersonGreen',
-//         align: 'center',
-//         width: 50,
-//       },
-//       {
-//         title: '黄码',
-//         dataIndex: 'buildPersonOrange',
-//         key: 'buildPersonOrange',
-//         align: 'center',
-//         width: 50,
-//       },
-//       {
-//         title: '红码',
-//         dataIndex: 'buildPersonRed',
-//         key: 'buildPersonRed',
-//         align: 'center',
-//         width: 50,
-//       },
-//     ],
-//   },
-// ]
+const columnsProject = [
+  {
+    title: '工程名称',
+    dataIndex: 'name',
+    key: 'name',
+    width: 100,
+    fixed: 'left',
+    align: 'center',
+    className: 'unit-style',
+    ellipsis: true,
+  },
+  {
+    title: '码类型',
+    dataIndex: 'codeColor',
+    key: 'codeColor',
+    width: 100,
+    fixed: 'left',
+    align: 'center',
+    className: 'unit-style',
+    ellipsis: true,
+  },
+  {
+    title: '施工企业码',
+    children: [
+      {
+        title: '绿码',
+        dataIndex: 'companyGreenCodeColorCount',
+        key: 'companyGreenCodeColorCount',
+        align: 'center',
+        width: 50,
+      },
+      {
+        title: '黄码',
+        dataIndex: 'companyYellowCodeColorCount',
+        key: 'companyYellowCodeColorCount',
+        align: 'center',
+        width: 50,
+      },
+      {
+        title: '红码',
+        dataIndex: 'companyRedCodeColorCount',
+        key: 'companyRedCodeColorCount',
+        align: 'center',
+        width: 50,
+      },
+    ],
+  },
+  {
+    title: '施工人员码',
+    children: [
+      {
+        title: '绿码',
+        dataIndex: 'employeeGreenCodeColorCount',
+        key: 'employeeGreenCodeColorCount',
+        align: 'center',
+        width: 50,
+      },
+      {
+        title: '黄码',
+        dataIndex: 'employeeYellowCodeColorCount',
+        key: 'employeeYellowCodeColorCount',
+        align: 'center',
+        width: 50,
+      },
+      {
+        title: '红码',
+        dataIndex: 'employeeRedCodeColorCount',
+        key: 'employeeRedCodeColorCount',
+        align: 'center',
+        width: 50,
+      },
+    ],
+  },
+]
 
 const columnLog = [
   {
     title: '建管单位',
-    dataIndex: 'supervisoryUnit',
-    key: 'supervisoryUnit',
+    dataIndex: 'label',
+    key: 'slotOne',
     width: 100,
     fixed: 'left',
     align: 'center',
-    customCell: rowClick,
+    customCell: logRowClick,
     ellipsis: true,
   },
   {
     title: '作业计划数',
-    dataIndex: 'jobPlanCount',
-    key: 'jobPlanCount',
+    dataIndex: 'planCount',
+    key: 'planCount',
     width: 100,
     align: 'center',
     ellipsis: true,
   },
   {
     title: '施工日志上报数',
-    dataIndex: 'logReportedCount',
-    key: 'logReportedCount',
+    dataIndex: 'sgWorkLogCount',
+    key: 'sgWorkLogCount',
     width: 100,
     align: 'center',
     ellipsis: true,
   },
   {
     title: '监理日志上报数',
-    dataIndex: 'supervisorReportedCount',
-    key: 'supervisorReportedCount',
+    dataIndex: 'jlWorkLogCount',
+    key: 'jlWorkLogCount',
+    width: 100,
+    align: 'center',
+    ellipsis: true,
+  },
+]
+
+const columnLogProject = [
+  {
+    title: '工程名称',
+    dataIndex: 'name',
+    key: 'name',
+    width: 100,
+    fixed: 'left',
+    align: 'center',
+    ellipsis: true,
+  },
+  {
+    title: '作业计划数',
+    dataIndex: 'planCount',
+    key: 'planCount',
+    width: 100,
+    align: 'center',
+    ellipsis: true,
+  },
+  {
+    title: '施工日志上报数',
+    dataIndex: 'sgWorkLogCount',
+    key: 'sgWorkLogCount',
+    width: 100,
+    align: 'center',
+    ellipsis: true,
+  },
+  {
+    title: '监理日志上报数',
+    dataIndex: 'jlWorkLogCount',
+    key: 'jlWorkLogCount',
     width: 100,
     align: 'center',
     ellipsis: true,
