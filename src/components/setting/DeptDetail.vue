@@ -160,7 +160,7 @@ const initModal = async (type: number, initInfo: any) => {
   handleType.value = type
   await getDepartmentList()
   if (type === actionTypeEnum.EDIT) {
-    title.value = '编辑用户'
+    title.value = '编辑信息'
     deptId.value = initInfo.deptId
     await getDeptDetail(initInfo.deptId)
   }
