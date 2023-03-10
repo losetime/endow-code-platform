@@ -11,7 +11,7 @@
       ref="tableLogTaggingInstance"
       rowKey="id"
       v-if="!haveLogProjectInfo"
-      :columns="columnLog"
+      :columns="columnRisk"
       :getTableList="getLogAnalysisData"
       :row-selection="false"
       :params="logListParam"
@@ -36,7 +36,10 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import YmTable from '@/components/common/YmTable.vue'
-import { apiGetLogAnalysisList, apiPostExportLogAnalysisList } from '@/service/api/statementAnalysis'
+import {
+  apiGetConstructionRiskAnalysisList,
+  apiPostExportConstructionRiskAnalysisList,
+} from '@/service/api/statementAnalysis'
 import { message } from 'ant-design-vue'
 import { Moment } from 'moment'
 
@@ -71,7 +74,7 @@ const changeLogParam = (flag: number) => {
   tableLogTaggingInstance.value.handleReacquire()
 }
 
-function logRowClick(record: any, index: any) {
+function rowClick(record: any, index: any) {
   return {
     onClick: () => {
       if (index > 0) {
@@ -103,7 +106,7 @@ const lastLogCompanyList = () => {
 }
 
 const getLogAnalysisData = async (params: any) => {
-  const { code, data } = await apiGetLogAnalysisList(params)
+  const { code, data } = await apiGetConstructionRiskAnalysisList(params)
   if (code === 20000) {
     if (lastIsClick.value) tempLogDeptIds.value = tempLogDeptIds.value.slice(0, tempLogDeptIds.value.length - 1)
     tempLogExportList.value = data
@@ -113,11 +116,18 @@ const getLogAnalysisData = async (params: any) => {
         id: item.id,
         parentId: item.parentId,
         label: item.label,
-        planCount: item.otherInfo.planCount,
-        sgWorkLogCount: item.otherInfo.sgWorkLogCount,
-        jlWorkLogCount: item.otherInfo.jlWorkLogCount,
-        singleProjects: item.otherInfo.singleProjects,
+        risk1PlanCount: item.otherInfo.risk1PlanCount,
+        risk1OnDutyRate: item.otherInfo.risk1OnDutyRate,
+        risk2PlanCount: item.otherInfo.risk2PlanCount,
+        risk2OnDutyRate: item.otherInfo.risk2OnDutyRate,
+        risk3PlanCount: item.otherInfo.risk3PlanCount,
+        risk3OnDutyRate: item.otherInfo.risk3OnDutyRate,
+        risk4PlanCount: item.otherInfo.risk4PlanCount,
+        risk4OnDutyRate: item.otherInfo.risk4OnDutyRate,
+        risk5PlanCount: item.otherInfo.risk5PlanCount,
+        risk5OnDutyRate: item.otherInfo.risk5OnDutyRate,
         childrenColumnName: item.children,
+        singleProjects: item.otherInfo.singleProjects,
       }))
       resolve({
         code: 20000,
@@ -128,7 +138,7 @@ const getLogAnalysisData = async (params: any) => {
 }
 
 const getLogAnalysisProjectData = async (params: any) => {
-  const { code, data } = await apiGetLogAnalysisList(params)
+  const { code, data } = await apiGetConstructionRiskAnalysisList(params)
   if (code === 20000) {
     if (lastIsClick.value) tempLogDeptIds.value = tempLogDeptIds.value.slice(0, tempLogDeptIds.value.length - 1)
     tempLogExportList.value = data
@@ -136,9 +146,16 @@ const getLogAnalysisProjectData = async (params: any) => {
       tempLogDataList.value = data[0].otherInfo.singleProjects.map((item: any, index: number) => ({
         key: index,
         name: item.name,
-        planCount: item.planCount,
-        sgWorkLogCount: item.sgWorkLogCount,
-        jlWorkLogCount: item.jlWorkLogCount,
+        risk1PlanCount: item.risk1PlanCount,
+        risk1OnDutyRate: item.risk1OnDutyRate,
+        risk2PlanCount: item.risk2PlanCount,
+        risk2OnDutyRate: item.risk2OnDutyRate,
+        risk3PlanCount: item.risk3PlanCount,
+        risk3OnDutyRate: item.risk3OnDutyRate,
+        risk4PlanCount: item.risk4PlanCount,
+        risk4OnDutyRate: item.risk4OnDutyRate,
+        risk5PlanCount: item.risk5PlanCount,
+        risk5OnDutyRate: item.risk5OnDutyRate,
       }))
       resolve({
         code: 20000,
@@ -157,7 +174,7 @@ const HandleLogExport = async () => {
     message.info('暂无报表需要导出')
     return
   }
-  await apiPostExportLogAnalysisList(exportParma)
+  await apiPostExportConstructionRiskAnalysisList(exportParma)
 }
 
 const onChange = (date: any, dateString: any) => {
@@ -168,7 +185,7 @@ const onChange = (date: any, dateString: any) => {
   if (tableLogTaggingProjectInstance.value != null) tableLogTaggingProjectInstance.value.handleReacquire()
 }
 
-const columnLog = [
+const columnRisk = [
   {
     title: '建管单位',
     dataIndex: 'label',
@@ -176,32 +193,103 @@ const columnLog = [
     width: 100,
     fixed: 'left',
     align: 'center',
-    customCell: logRowClick,
+    customCell: rowClick,
     ellipsis: true,
   },
   {
-    title: '作业计划数',
-    dataIndex: 'planCount',
-    key: 'planCount',
-    width: 100,
-    align: 'center',
-    ellipsis: true,
+    title: '一级风险',
+    children: [
+      {
+        title: '作业计划数',
+        dataIndex: 'risk1PlanCount',
+        key: 'risk1PlanCount',
+        align: 'center',
+        width: 50,
+      },
+      {
+        title: '到岗到位率',
+        dataIndex: 'risk1OnDutyRate',
+        key: 'risk1OnDutyRate',
+        align: 'center',
+        width: 50,
+      },
+    ],
   },
   {
-    title: '施工日志上报数',
-    dataIndex: 'sgWorkLogCount',
-    key: 'sgWorkLogCount',
-    width: 100,
-    align: 'center',
-    ellipsis: true,
+    title: '二级风险',
+    children: [
+      {
+        title: '作业计划数',
+        dataIndex: 'risk2PlanCount',
+        key: 'risk2PlanCount',
+        align: 'center',
+        width: 50,
+      },
+      {
+        title: '到岗到位率',
+        dataIndex: 'risk2OnDutyRate',
+        key: 'risk2OnDutyRate',
+        align: 'center',
+        width: 50,
+      },
+    ],
   },
   {
-    title: '监理日志上报数',
-    dataIndex: 'jlWorkLogCount',
-    key: 'jlWorkLogCount',
-    width: 100,
-    align: 'center',
-    ellipsis: true,
+    title: '三级风险',
+    children: [
+      {
+        title: '作业计划数',
+        dataIndex: 'risk3PlanCount',
+        key: 'risk3PlanCount',
+        align: 'center',
+        width: 50,
+      },
+      {
+        title: '到岗到位率',
+        dataIndex: 'risk3OnDutyRate',
+        key: 'risk3OnDutyRate',
+        align: 'center',
+        width: 50,
+      },
+    ],
+  },
+  {
+    title: '四级风险',
+    children: [
+      {
+        title: '作业计划数',
+        dataIndex: 'risk4PlanCount',
+        key: 'risk4PlanCount',
+        align: 'center',
+        width: 50,
+      },
+      {
+        title: '到岗到位率',
+        dataIndex: 'risk4OnDutyRate',
+        key: 'risk4OnDutyRate',
+        align: 'center',
+        width: 50,
+      },
+    ],
+  },
+  {
+    title: '五级风险',
+    children: [
+      {
+        title: '作业计划数',
+        dataIndex: 'risk5PlanCount',
+        key: 'risk5PlanCount',
+        align: 'center',
+        width: 50,
+      },
+      {
+        title: '到岗到位率',
+        dataIndex: 'risk5OnDutyRate',
+        key: 'risk5OnDutyRate',
+        align: 'center',
+        width: 50,
+      },
+    ],
   },
 ]
 
@@ -216,28 +304,99 @@ const columnLogProject = [
     ellipsis: true,
   },
   {
-    title: '作业计划数',
-    dataIndex: 'planCount',
-    key: 'planCount',
-    width: 100,
-    align: 'center',
-    ellipsis: true,
+    title: '一级风险',
+    children: [
+      {
+        title: '作业计划数',
+        dataIndex: 'risk1PlanCount',
+        key: 'risk1PlanCount',
+        align: 'center',
+        width: 50,
+      },
+      {
+        title: '到岗到位率',
+        dataIndex: 'risk1OnDutyRate',
+        key: 'risk1OnDutyRate',
+        align: 'center',
+        width: 50,
+      },
+    ],
   },
   {
-    title: '施工日志上报数',
-    dataIndex: 'sgWorkLogCount',
-    key: 'sgWorkLogCount',
-    width: 100,
-    align: 'center',
-    ellipsis: true,
+    title: '二级风险',
+    children: [
+      {
+        title: '作业计划数',
+        dataIndex: 'risk2PlanCount',
+        key: 'risk2PlanCount',
+        align: 'center',
+        width: 50,
+      },
+      {
+        title: '到岗到位率',
+        dataIndex: 'risk2OnDutyRate',
+        key: 'risk2OnDutyRate',
+        align: 'center',
+        width: 50,
+      },
+    ],
   },
   {
-    title: '监理日志上报数',
-    dataIndex: 'jlWorkLogCount',
-    key: 'jlWorkLogCount',
-    width: 100,
-    align: 'center',
-    ellipsis: true,
+    title: '三级风险',
+    children: [
+      {
+        title: '作业计划数',
+        dataIndex: 'risk3PlanCount',
+        key: 'risk3PlanCount',
+        align: 'center',
+        width: 50,
+      },
+      {
+        title: '到岗到位率',
+        dataIndex: 'risk3OnDutyRate',
+        key: 'risk3OnDutyRate',
+        align: 'center',
+        width: 50,
+      },
+    ],
+  },
+  {
+    title: '四级风险',
+    children: [
+      {
+        title: '作业计划数',
+        dataIndex: 'risk4PlanCount',
+        key: 'risk4PlanCount',
+        align: 'center',
+        width: 50,
+      },
+      {
+        title: '到岗到位率',
+        dataIndex: 'risk4OnDutyRate',
+        key: 'risk4OnDutyRate',
+        align: 'center',
+        width: 50,
+      },
+    ],
+  },
+  {
+    title: '五级风险',
+    children: [
+      {
+        title: '作业计划数',
+        dataIndex: 'risk5PlanCount',
+        key: 'risk5PlanCount',
+        align: 'center',
+        width: 50,
+      },
+      {
+        title: '到岗到位率',
+        dataIndex: 'risk5OnDutyRate',
+        key: 'risk5OnDutyRate',
+        align: 'center',
+        width: 50,
+      },
+    ],
   },
 ]
 </script>

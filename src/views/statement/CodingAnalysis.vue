@@ -43,7 +43,7 @@ const tableTaggingProjectInstance = ref()
 const codingAnalysisParams = ref<any>({
   deptId: '',
 })
-
+const lastIsClick = ref(false)
 const haveProjectInfo = ref(false)
 //用来记录赋码分析列表数据
 const tempDataList = ref<any>([])
@@ -55,6 +55,7 @@ function rowClick(record: any, index: any) {
   return {
     onClick: () => {
       if (index > 0) {
+        lastIsClick.value = false
         codingAnalysisParams.value.deptId = record.id
         if (tempDeptIds.value.length == 0 || tempDeptIds.value.indexOf(tempDataList.value[index].parentId) == -1) {
           tempDeptIds.value.push(tempDataList.value[index].parentId)
@@ -70,18 +71,19 @@ function rowClick(record: any, index: any) {
 }
 
 const lastCompanyList = () => {
+  lastIsClick.value = true
   if (haveProjectInfo.value) {
     haveProjectInfo.value = false
   }
   codingAnalysisParams.value.deptId = tempDeptIds.value[tempDeptIds.value.length - 1]
   if (tableTaggingInstance.value !== null) tableTaggingInstance.value.handleReacquire()
-  tempDeptIds.value = tempDeptIds.value.slice(0, tempDeptIds.value.length - 1)
 }
 
 const getCodingAnalysisData = async (params: any) => {
   const { code, data } = await apiGetCodingAnalysisList(params)
   if (code === 20000) {
     tempExportList.value = data
+    if (lastIsClick.value) tempDeptIds.value = tempDeptIds.value.slice(0, tempDeptIds.value.length - 1)
     return new Promise((resolve: any) => {
       tempDataList.value = data.map((item: any, i: number) => ({
         key: i,
@@ -112,6 +114,7 @@ const getCodingAnalysisProjectData = async (params: any) => {
   const { code, data } = await apiGetCodingAnalysisList(params)
   if (code === 20000) {
     tempExportList.value = data
+    if (lastIsClick.value) tempDeptIds.value = tempDeptIds.value.slice(0, tempDeptIds.value.length - 1)
     return new Promise((resolve: any) => {
       tempDataList.value = data[0].otherInfo.singleProjects.map((item: any, index: number) => ({
         key: index,

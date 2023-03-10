@@ -7,6 +7,8 @@ enum Api {
   exportLogAnalysisList = '/ecode_grant/report/log/export', //导出日志分析报表
   getSupervisonManagementAnalysisList = '/ecode_grant/report/supervision', //获取监督管理分析列表
   exportSupervisonManagementAnalysisList = '/ecode_grant/report/supervision/export', //导出监督管理分析报表
+  getConstructionRiskAnalysisList = '/ecode_grant/report/plan_risk', //获取施工风险分析列表
+  exportConstructionRiskAnalysisList = '/ecode_grant/report/plan_risk/export', //导出施工风险分析
 }
 
 /**
@@ -73,6 +75,29 @@ export function apiGetSupervisonManagementAnalysisList(params: any): Promise<any
 export function apiPostExportSupervisonManagementAnalysisList(params: any) {
   return $http.request({
     url: Api.exportSupervisonManagementAnalysisList,
+    method: 'POST',
+    responseType: 'blob',
+    params,
+  })
+}
+
+/**
+ * @desc: 获取施工风险分析列表
+ */
+export function apiGetConstructionRiskAnalysisList(params: any): Promise<any> {
+  return $http.request({
+    url: Api.getConstructionRiskAnalysisList,
+    method: 'GET',
+    params,
+  })
+}
+
+/**
+ * @desc: 导出施工风险分析列表
+ */
+export function apiPostExportConstructionRiskAnalysisList(params: any) {
+  return $http.request({
+    url: Api.exportConstructionRiskAnalysisList,
     method: 'POST',
     responseType: 'blob',
     params,

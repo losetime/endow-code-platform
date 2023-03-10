@@ -44,7 +44,7 @@ import { message } from 'ant-design-vue'
 import { Moment } from 'moment'
 
 const dateArea = ref<Moment[]>([])
-
+const lastIsClick = ref(false)
 const tableSmATaggingInstance = ref()
 const tableSmATaggingProjectInstance = ref()
 const haveSmAProjectInfo = ref(false)
@@ -78,6 +78,7 @@ function smaRowClick(record: any, index: any) {
   return {
     onClick: () => {
       if (index > 0) {
+        lastIsClick.value = false
         smaListParam.value.deptId = record.id
         if (
           tempSmADeptIds.value.length == 0 ||
@@ -89,7 +90,6 @@ function smaRowClick(record: any, index: any) {
           haveSmAProjectInfo.value = true
           return
         }
-
         tableSmATaggingInstance.value.handleReacquire()
       }
     },
@@ -97,17 +97,18 @@ function smaRowClick(record: any, index: any) {
 }
 
 const lastSmACompanyList = () => {
+  lastIsClick.value = true
   if (haveSmAProjectInfo.value) {
     haveSmAProjectInfo.value = false
   }
   smaListParam.value.deptId = tempSmADeptIds.value[tempSmADeptIds.value.length - 1]
   if (tableSmATaggingInstance.value !== null) tableSmATaggingInstance.value.handleReacquire()
-  tempSmADeptIds.value = tempSmADeptIds.value.slice(0, tempSmADeptIds.value.length - 1)
 }
 
 const getSupervisionManagementAnalysisData = async (params: any) => {
   const { code, data } = await apiGetSupervisonManagementAnalysisList(params)
   if (code === 20000) {
+    if (lastIsClick.value) tempSmADeptIds.value = tempSmADeptIds.value.slice(0, tempSmADeptIds.value.length - 1)
     tempSmAExportList.value = data
     return new Promise((resolve: any) => {
       tempSmADataList.value = data.map((item: any, i: number) => ({
@@ -137,6 +138,7 @@ const getSupervisionManagementAnalysisData = async (params: any) => {
 const getSupervisionManagementAnalysisProjectData = async (params: any) => {
   const { code, data } = await apiGetSupervisonManagementAnalysisList(params)
   if (code === 20000) {
+    if (lastIsClick.value) tempSmADeptIds.value = tempSmADeptIds.value.slice(0, tempSmADeptIds.value.length - 1)
     tempSmAExportList.value = data
     return new Promise((resolve: any) => {
       tempSmADataList.value = data[0].otherInfo.singleProjects.map((item: any, index: number) => ({
