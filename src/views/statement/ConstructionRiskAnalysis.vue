@@ -1,20 +1,20 @@
 <template>
-  <a-button type="primary" @click="HandleLogExport">导出报表</a-button>
-  <a-button v-if="tempLogDeptIds.length > 0" type="primary" style="margin-left: 15px" @click="lastLogCompanyList"
+  <a-button type="primary" @click="HandleRiskExport">导出报表</a-button>
+  <a-button v-if="tempRiskDeptIds.length > 0" type="primary" style="margin-left: 15px" @click="lastRiskCompanyList"
     >返回上级</a-button
   >
   <div class="item-statement">
-    <a-button class="btn-date" type="primary" @click="changeLogParam(0)">本周</a-button>
-    <a-button class="btn-date" type="primary" @click="changeLogParam(1)">本月</a-button>
+    <a-button class="btn-date" type="primary" @click="changeRiskParam(0)">本周</a-button>
+    <a-button class="btn-date" type="primary" @click="changeRiskParam(1)">本月</a-button>
     <a-range-picker class="btn-date" v-model:value="dateArea" @change="onChange" />
     <ym-table
-      ref="tableLogTaggingInstance"
+      ref="tableRiskTaggingInstance"
       rowKey="id"
-      v-if="!haveLogProjectInfo"
+      v-if="!haveRiskProjectInfo"
       :columns="columnRisk"
-      :getTableList="getLogAnalysisData"
+      :getTableList="getRiskAnalysisData"
       :row-selection="false"
-      :params="logListParam"
+      :params="riskListParam"
     >
       <template #slotOne="{ index, record }">
         <a v-if="index > 0">{{ record.label }}</a>
@@ -22,13 +22,13 @@
       </template>
     </ym-table>
     <ym-table
-      ref="tableLogTaggingProjectInstance"
+      ref="tableRiskTaggingProjectInstance"
       rowKey="id"
       v-else
-      :columns="columnLogProject"
-      :getTableList="getLogAnalysisProjectData"
+      :columns="columnRiskProject"
+      :getTableList="getRiskAnalysisProjectData"
       :row-selection="false"
-      :params="logListParam"
+      :params="riskListParam"
     />
   </div>
 </template>
@@ -45,16 +45,16 @@ import { Moment } from 'moment'
 
 const dateArea = ref<Moment[]>([])
 const lastIsClick = ref(false)
-const tableLogTaggingInstance = ref()
-const tableLogTaggingProjectInstance = ref()
-const haveLogProjectInfo = ref(false)
+const tableRiskTaggingInstance = ref()
+const tableRiskTaggingProjectInstance = ref()
+const haveRiskProjectInfo = ref(false)
 //用来记录上一级的deptId
-const tempLogDeptIds = ref<any>([])
+const tempRiskDeptIds = ref<any>([])
 //导出报表使用
-const tempLogExportList = ref<any>([])
-//用来记录日志分析列表数据
-const tempLogDataList = ref<any>([])
-const logListParam = ref<any>({
+const tempRiskExportList = ref<any>([])
+//用来记录实施风险分析列表数据
+const tempRiskDataList = ref<any>([])
+const riskListParam = ref<any>({
   deptId: '',
   endTime: '',
   startTime: '',
@@ -63,15 +63,15 @@ const logListParam = ref<any>({
 })
 
 //改变报表查询参数方法  0：本周 1：本月
-const changeLogParam = (flag: number) => {
+const changeRiskParam = (flag: number) => {
   if (flag === 0) {
-    logListParam.value.thisWeek = true
-    logListParam.value.thisMonth = false
+    riskListParam.value.thisWeek = true
+    riskListParam.value.thisMonth = false
   } else {
-    logListParam.value.thisWeek = false
-    logListParam.value.thisMonth = true
+    riskListParam.value.thisWeek = false
+    riskListParam.value.thisMonth = true
   }
-  tableLogTaggingInstance.value.handleReacquire()
+  tableRiskTaggingInstance.value.handleReacquire()
 }
 
 function rowClick(record: any, index: any) {
@@ -79,39 +79,39 @@ function rowClick(record: any, index: any) {
     onClick: () => {
       if (index > 0) {
         lastIsClick.value = false
-        logListParam.value.deptId = record.id
+        riskListParam.value.deptId = record.id
         if (
-          tempLogDeptIds.value.length == 0 ||
-          tempLogDeptIds.value.indexOf(tempLogDataList.value[index].parentId) == -1
+          tempRiskDeptIds.value.length == 0 ||
+          tempRiskDeptIds.value.indexOf(tempRiskDataList.value[index].parentId) == -1
         ) {
-          tempLogDeptIds.value.push(tempLogDataList.value[index].parentId)
+          tempRiskDeptIds.value.push(tempRiskDataList.value[index].parentId)
         }
         if (record.childrenColumnName == null || record.childrenColumnName.length == 0) {
-          haveLogProjectInfo.value = true
+          haveRiskProjectInfo.value = true
           return
         }
-        tableLogTaggingInstance.value.handleReacquire()
+        tableRiskTaggingInstance.value.handleReacquire()
       }
     },
   }
 }
 
-const lastLogCompanyList = () => {
+const lastRiskCompanyList = () => {
   lastIsClick.value = true
-  if (haveLogProjectInfo.value) {
-    haveLogProjectInfo.value = false
+  if (haveRiskProjectInfo.value) {
+    haveRiskProjectInfo.value = false
   }
-  logListParam.value.deptId = tempLogDeptIds.value[tempLogDeptIds.value.length - 1]
-  if (tableLogTaggingInstance.value !== null) tableLogTaggingInstance.value.handleReacquire()
+  riskListParam.value.deptId = tempRiskDeptIds.value[tempRiskDeptIds.value.length - 1]
+  if (tableRiskTaggingInstance.value !== null) tableRiskTaggingInstance.value.handleReacquire()
 }
 
-const getLogAnalysisData = async (params: any) => {
+const getRiskAnalysisData = async (params: any) => {
   const { code, data } = await apiGetConstructionRiskAnalysisList(params)
   if (code === 20000) {
-    if (lastIsClick.value) tempLogDeptIds.value = tempLogDeptIds.value.slice(0, tempLogDeptIds.value.length - 1)
-    tempLogExportList.value = data
+    if (lastIsClick.value) tempRiskDeptIds.value = tempRiskDeptIds.value.slice(0, tempRiskDeptIds.value.length - 1)
+    tempRiskExportList.value = data
     return new Promise((resolve: any) => {
-      tempLogDataList.value = data.map((item: any, i: number) => ({
+      tempRiskDataList.value = data.map((item: any, i: number) => ({
         key: i,
         id: item.id,
         parentId: item.parentId,
@@ -131,19 +131,19 @@ const getLogAnalysisData = async (params: any) => {
       }))
       resolve({
         code: 20000,
-        data: tempLogDataList.value,
+        data: tempRiskDataList.value,
       })
     })
   }
 }
 
-const getLogAnalysisProjectData = async (params: any) => {
+const getRiskAnalysisProjectData = async (params: any) => {
   const { code, data } = await apiGetConstructionRiskAnalysisList(params)
   if (code === 20000) {
-    if (lastIsClick.value) tempLogDeptIds.value = tempLogDeptIds.value.slice(0, tempLogDeptIds.value.length - 1)
-    tempLogExportList.value = data
+    if (lastIsClick.value) tempRiskDeptIds.value = tempRiskDeptIds.value.slice(0, tempRiskDeptIds.value.length - 1)
+    tempRiskExportList.value = data
     return new Promise((resolve: any) => {
-      tempLogDataList.value = data[0].otherInfo.singleProjects.map((item: any, index: number) => ({
+      tempRiskDataList.value = data[0].otherInfo.singleProjects.map((item: any, index: number) => ({
         key: index,
         name: item.name,
         risk1PlanCount: item.risk1PlanCount,
@@ -159,18 +159,18 @@ const getLogAnalysisProjectData = async (params: any) => {
       }))
       resolve({
         code: 20000,
-        data: tempLogDataList.value,
+        data: tempRiskDataList.value,
       })
     })
   }
 }
 
-const HandleLogExport = async () => {
+const HandleRiskExport = async () => {
   let exportParma = {
-    deptId: logListParam.value.deptId,
-    reportData: tempLogExportList.value,
+    deptId: riskListParam.value.deptId,
+    reportData: tempRiskExportList.value,
   }
-  if (tempLogExportList.value.length == 0) {
+  if (tempRiskExportList.value.length == 0) {
     message.info('暂无报表需要导出')
     return
   }
@@ -178,11 +178,10 @@ const HandleLogExport = async () => {
 }
 
 const onChange = (date: any, dateString: any) => {
-  console.log('date', dateString)
-  logListParam.value.startTime = dateString[0]
-  logListParam.value.endTime = dateString[1]
-  if (tableLogTaggingInstance.value != null) tableLogTaggingInstance.value.handleReacquire()
-  if (tableLogTaggingProjectInstance.value != null) tableLogTaggingProjectInstance.value.handleReacquire()
+  riskListParam.value.startTime = dateString[0]
+  riskListParam.value.endTime = dateString[1]
+  if (tableRiskTaggingInstance.value != null) tableRiskTaggingInstance.value.handleReacquire()
+  if (tableRiskTaggingProjectInstance.value != null) tableRiskTaggingProjectInstance.value.handleReacquire()
 }
 
 const columnRisk = [
@@ -293,7 +292,7 @@ const columnRisk = [
   },
 ]
 
-const columnLogProject = [
+const columnRiskProject = [
   {
     title: '工程名称',
     dataIndex: 'name',
