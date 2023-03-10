@@ -4,7 +4,7 @@
     <div class="search-temp">
       <a-form
         class="form-style"
-        labelAlign="left"
+        labelAlign="right"
         :model="saveParam"
         :rules="rules"
         v-bind="layout"
@@ -18,7 +18,7 @@
         <a-form-item label="正文" name="content" class="item-padding">
           <richText ref="textInstance" v-model:value="saveParam.content" autocomplete="off" />
         </a-form-item>
-        <a-form-item label="添加附件">
+        <a-form-item label="添加附件" class="item-padding">
           <a-upload
             v-model:file-list="fileList"
             name="files"
@@ -61,8 +61,8 @@ const uploadFileUrl = ref('/ecode_grant/file/upload')
 const fileList = ref<any>([])
 
 const layout = {
-  labelCol: { span: 1 },
-  wrapperCol: { span: 23 },
+  labelCol: { span: 2 },
+  wrapperCol: { span: 21 },
 }
 
 onMounted(() => {
@@ -215,8 +215,10 @@ const handleChange = (info: UploadChangeParam) => {
   }
 
   .button-item {
-    display: flex;
-    justify-content: flex-start;
+    // display: flex;
+    // justify-content: right;
+    display: block;
+    justify-content: right;
   }
   .item-padding {
     margin-right: 80px;

@@ -64,12 +64,12 @@ const onSearch = () => {
 /**
  * @desc 删除
  */
-const handleDelete = () => {
+const handleDelete = async () => {
   YmModal.delete(async () => {
     const { code } = await apiDeleteTranscode(selectedRowKeys.value)
-    if (code === 200) {
-      message.success('删除成功')
+    if (code === 20000) {
       onSearch()
+      message.success('删除成功')
     }
   })
 }
