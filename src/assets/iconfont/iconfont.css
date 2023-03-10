@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3514250 */
-  src: url('iconfont.woff2?t=1663929445989') format('woff2'),
-       url('iconfont.woff?t=1663929445989') format('woff'),
-       url('iconfont.ttf?t=1663929445989') format('truetype');
+  src: url('iconfont.woff2?t=1678440053534') format('woff2'),
+       url('iconfont.woff?t=1678440053534') format('woff'),
+       url('iconfont.ttf?t=1678440053534') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-RectangleCopy:before {
+  content: "\e6c2";
 }
 
 .icon-vr-m:before {
